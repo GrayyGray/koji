@@ -1,0 +1,3 @@
+*.o
+koji
+compile_commands.json
