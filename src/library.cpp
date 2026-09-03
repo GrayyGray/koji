@@ -44,8 +44,10 @@ std::vector<AlbumEntry> getAlbums()
         return albums;
     }
 
-    std::filesystem::path album_directory = *xdg_config_directory / "koji" / "albums";
-    for (const auto &album : std::filesystem::recursive_directory_iterator(album_directory))
+    std::filesystem::path album_directory =
+        *xdg_config_directory / "koji" / "albums";
+    for (const auto &album :
+         std::filesystem::recursive_directory_iterator(album_directory))
     {
         if (!std::filesystem::is_directory(album))
         {
@@ -53,8 +55,10 @@ std::vector<AlbumEntry> getAlbums()
         }
 
         std::smatch match;
-        std::string relative_album_path_string = std::filesystem::relative(album.path(), album_directory).string();
-        if (!std::regex_match(relative_album_path_string, match, std::regex(R"(([^/]+)/([^/]+))")))
+        std::string relative_album_path_string =
+            std::filesystem::relative(album.path(), album_directory).string();
+        if (!std::regex_match(relative_album_path_string, match,
+                              std::regex(R"(([^/]+)/([^/]+))")))
         {
             continue;
         }
@@ -77,7 +81,8 @@ std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
     std::vector<SongEntry> songs;
     for (const auto &album : albums)
     {
-        for (const auto &song : std::filesystem::recursive_directory_iterator(album.path.c_str()))
+        for (const auto &song :
+             std::filesystem::recursive_directory_iterator(album.path.c_str()))
         {
             if (std::filesystem::is_directory(song))
             {
@@ -85,9 +90,12 @@ std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
             }
 
             std::smatch match;
-            std::string relative_song_path_string = std::filesystem::relative(song.path(), album.path).string();
+            std::string relative_song_path_string =
+                std::filesystem::relative(song.path(), album.path).string();
 
-            if (!std::regex_match(relative_song_path_string, match, std::regex(R"(([0-9]+) - (.+)\.(mp3|wav|flac|ogg|m4a))")))
+            if (!std::regex_match(
+                    relative_song_path_string, match,
+                    std::regex(R"(([0-9]+) - (.+)\.(mp3|wav|flac|ogg|m4a))")))
             {
                 continue;
             }
@@ -99,7 +107,8 @@ std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
             TagLib::FileRef song_file(song.path().c_str());
             if (!song_file.isNull() && song_file.audioProperties() != nullptr)
             {
-                int song_runtime_in_seconds = song_file.audioProperties()->lengthInSeconds();
+                int song_runtime_in_seconds =
+                    song_file.audioProperties()->lengthInSeconds();
 
                 int hours   = song_runtime_in_seconds / 3600;
                 int minutes = (song_runtime_in_seconds % 3600) / 60;
@@ -113,7 +122,8 @@ std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
             else
                 duration = "00:00";
 
-            SongEntry entry = {song.path(), album, track_number, song_title, duration};
+            SongEntry entry = {song.path(), album, track_number, song_title,
+                               duration};
             songs.push_back(entry);
         }
     }
