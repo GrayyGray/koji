@@ -10,10 +10,13 @@ struct AppState
 {
     ImGuiIO        *io;
     const char     *title;
-    int             width, height;
-    int             scaledWidth, scaledHeight;
     SDL_Window     *window;
     SDL_Renderer   *renderer;
-    float           display_content_scale;
     SDL_WindowFlags window_flags;
+    int             width, height;
+    float           display_content_scale;
+    int             scaledWidth, scaledHeight;
 };
+
+bool initialize(AppState &state);
+void cleanup(AppState &state);
