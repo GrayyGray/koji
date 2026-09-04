@@ -131,7 +131,7 @@ bool beginTab(const char *label)
         return false;
 
     ImGui::Spacing();
-    ImGui::BeginChild("mainBrowser", ImVec2(0, 0), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
+    ImGui::BeginChild("mainBrowser", ImVec2(0, -65), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
 
     return true;

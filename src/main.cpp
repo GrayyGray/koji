@@ -44,12 +44,12 @@ int main(int, char **)
         {
             if (beginTab("Queue"))
             {
-                songQueueTab(queue);
+                songQueueTab(state, queue);
                 endTab();
             }
             if (beginTab("Albums"))
             {
-                albumSelectionTab(queue, albums);
+                albumSelectionTab(state, queue, albums);
                 endTab();
             }
             if (beginTab("Playlists"))
