@@ -19,4 +19,13 @@ struct AppState
 };
 
 bool initialize(AppState &state);
+
+bool pollEvents(const AppState &state);
+
+void beginMainWindow(const AppState &state);
+void endMainWindow(const AppState &state);
+
+bool beginTab(const char *label);
+void endTab();
+
 void cleanup(AppState &state);

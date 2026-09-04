@@ -36,119 +36,29 @@ int main(int, char **)
     bool done = false;
     while (!done)
     {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
+        if (!pollEvents(state))
+            done = true;
+
+        beginMainWindow(state);
+        if (ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None))
         {
-            ImGui_ImplSDL3_ProcessEvent(&event);
-            if (event.type == SDL_EVENT_QUIT)
+            if (beginTab("Queue"))
             {
-                done = true;
-                break;
+                songQueueTab(queue);
+                endTab();
             }
-
-            if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
-                event.window.windowID == SDL_GetWindowID(state.window))
+            if (beginTab("Albums"))
             {
-                done = true;
-                break;
+                albumSelectionTab(queue, albums);
+                endTab();
             }
-        }
-
-        // when minimized wait ten miliseconds before doing anything else (saves
-        // cpu)
-        if (SDL_GetWindowFlags(state.window) & SDL_WINDOW_MINIMIZED)
-        {
-            SDL_Delay(10);
-            continue;
-        }
-
-        // Start the Dear ImGui frame
-        ImGui_ImplSDLRenderer3_NewFrame();
-        ImGui_ImplSDL3_NewFrame();
-        ImGui::NewFrame();
-
-        {
-            // Fullscreen
-            ImGui::SetNextWindowPos(ImVec2(0, 0));
-            ImGui::SetNextWindowSize(state.io->DisplaySize);
-
-            // Set backround to black
-            ImGui::PushStyleColor(ImGuiCol_WindowBg,
-                                  ImVec4(0.0f, 0.0f, 0.0f, 1.0f)); // RGBA values
-
-            // Make a new window
-            ImGui::Begin("mainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings);
-
-            if (ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None))
+            if (beginTab("Playlists"))
             {
-                if (ImGui::BeginTabItem("Queue", nullptr,
-                                        ImGuiTabItemFlags_NoArrowNav))
-                {
-                    ImGui::Spacing();
-                    ImGui::BeginChild("mainBrowser", ImVec2(0, 0),
-                                      ImGuiChildFlags_NavFlattened,
-                                      ImGuiWindowFlags_NoNavFocus);
-                    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-
-                    songQueueTab(queue);
-
-                    ImGui::PopItemFlag();
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Albums", nullptr,
-                                        ImGuiTabItemFlags_NoArrowNav))
-                {
-                    ImGui::Spacing();
-                    ImGui::BeginChild("mainBrowser", ImVec2(0, 0),
-                                      ImGuiChildFlags_NavFlattened,
-                                      ImGuiWindowFlags_NoNavFocus);
-                    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-
-                    albumSelectionTab(queue, albums);
-
-                    ImGui::PopItemFlag();
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Playlists", nullptr,
-                                        ImGuiTabItemFlags_NoArrowNav))
-                {
-                    ImGui::Spacing();
-                    ImGui::BeginChild("mainBrowser", ImVec2(0, 0),
-                                      ImGuiChildFlags_NavFlattened,
-                                      ImGuiWindowFlags_NoNavFocus);
-                    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-                    ImGui::PopItemFlag();
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Download", nullptr,
-                                        ImGuiTabItemFlags_NoArrowNav))
-                {
-                    ImGui::Spacing();
-                    ImGui::BeginChild("mainBrowser", ImVec2(0, 0),
-                                      ImGuiChildFlags_NavFlattened,
-                                      ImGuiWindowFlags_NoNavFocus);
-                    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-                    ImGui::PopItemFlag();
-                    ImGui::EndChild();
-                    ImGui::EndTabItem();
-                }
-                ImGui::EndTabBar();
+                endTab();
             }
-            ImGui::PopStyleColor();
-            ImGui::End();
+            ImGui::EndTabBar();
         }
-
-        // Rendering
-        ImGui::Render();
-        SDL_SetRenderScale(state.renderer, state.io->DisplayFramebufferScale.x,
-                           state.io->DisplayFramebufferScale.y);
-
-        SDL_RenderClear(state.renderer);
-        ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), state.renderer);
-        SDL_RenderPresent(state.renderer);
+        endMainWindow(state);
     }
 
     cleanup(state);

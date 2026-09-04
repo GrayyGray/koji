@@ -3,6 +3,8 @@
 
 #include "app.h"
 
+#include <SDL3/SDL.h>
+
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
@@ -16,17 +18,14 @@ bool initialize(AppState &state)
     }
 
     // setup SDL3 scaling
-    state.display_content_scale =
-        SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    state.scaledWidth  = (int)(state.width * state.display_content_scale);
-    state.scaledHeight = (int)(state.height * state.display_content_scale);
+    state.display_content_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+    state.scaledWidth           = (int)(state.width * state.display_content_scale);
+    state.scaledHeight          = (int)(state.height * state.display_content_scale);
 
-    state.window =
-        SDL_CreateWindow(state.title, state.scaledWidth, state.scaledHeight, 0);
+    state.window = SDL_CreateWindow(state.title, state.scaledWidth, state.scaledHeight, 0);
     if (!state.window)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error",
-                                 "Error creating window", state.window);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", state.window);
         cleanup(state);
         return false;
     }
@@ -34,17 +33,12 @@ bool initialize(AppState &state)
     state.renderer = SDL_CreateRenderer(state.window, nullptr);
     if (!state.renderer)
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error",
-                                 "Error creating renderer", state.window);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating renderer", state.window);
         cleanup(state);
         return false;
     }
 
     SDL_SetRenderVSync(state.renderer, 1);
-    // SDL_SetWindowPosition(state.window, SDL_WINDOWPOS_CENTERED,
-    // SDL_WINDOWPOS_CENTERED); // broken on wayland
-    // SDL_SetRenderLogicalPresentation(state.renderer, state.width, state.height,
-    // SDL_LOGICAL_PRESENTATION_LETTERBOX); // scaling set elsewhere
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -81,6 +75,73 @@ bool initialize(AppState &state)
 
     SDL_ShowWindow(state.window);
     return true;
+}
+
+bool pollEvents(const AppState &state)
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {
+        ImGui_ImplSDL3_ProcessEvent(&event);
+        if (event.type == SDL_EVENT_QUIT)
+        {
+            return false;
+        }
+
+        if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
+            event.window.windowID == SDL_GetWindowID(state.window))
+        {
+            return false;
+        }
+    }
+
+    if (SDL_GetWindowFlags(state.window) & SDL_WINDOW_MINIMIZED)
+    {
+        SDL_Delay(10);
+    }
+
+    return true;
+}
+
+void beginMainWindow(const AppState &state)
+{
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(state.io->DisplaySize);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+    ImGui::Begin("mainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings);
+}
+
+void endMainWindow(const AppState &state)
+{
+    ImGui::PopStyleColor();
+    ImGui::End();
+    ImGui::Render();
+    SDL_SetRenderScale(state.renderer, state.io->DisplayFramebufferScale.x, state.io->DisplayFramebufferScale.y);
+    SDL_RenderClear(state.renderer);
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), state.renderer);
+    SDL_RenderPresent(state.renderer);
+}
+
+bool beginTab(const char *label)
+{
+    if (!ImGui::BeginTabItem(label, nullptr, ImGuiTabItemFlags_NoArrowNav))
+        return false;
+
+    ImGui::Spacing();
+    ImGui::BeginChild("mainBrowser", ImVec2(0, 0), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
+    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
+
+    return true;
+}
+
+void endTab()
+{
+    ImGui::PopItemFlag();
+    ImGui::EndChild();
+    ImGui::EndTabItem();
 }
 
 void cleanup(AppState &state)
