@@ -4,16 +4,19 @@
 #include "tabs.h"
 
 #include "imgui.h"
+#include "imgui_utils.h"
 
-void songQueueTab(AppState state, std::vector<SongEntry> &queue)
+void songQueueTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index)
 {
+    const ImVec4 selected_background_color = darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
+
     if (ImGui::BeginTable("songQueueTab", 4, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
         ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
         ImGui::TableSetupColumn("Artist");
         ImGui::TableSetupColumn("Title");
         ImGui::TableSetupColumn("Album");
-        ImGui::TableSetupColumn("Length");
+        ImGui::TableSetupColumn("Duration");
 
         ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
         ImGui::TableHeadersRow();
@@ -24,11 +27,20 @@ void songQueueTab(AppState state, std::vector<SongEntry> &queue)
         {
             ImGui::PushID(i);
             ImGui::TableNextRow();
-
             ImGui::TableNextColumn();
+
+            if (i != -1 && i == now_playing_index)
+            {
+                ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
+            }
+
             if (ImGui::Selectable(queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                printf("%d\n", i);
+                printf("\nnowplayingindex=%d\n", now_playing_index);
+                printf("i=%d\n", i);
+                if (queue.size() > 0)
+                    now_playing_index = i;
+                printf("nowplayingindex=%d\n", now_playing_index);
                 // OnSongClicked(i);
             }
 
@@ -40,13 +52,14 @@ void songQueueTab(AppState state, std::vector<SongEntry> &queue)
 
             ImGui::TableNextColumn();
             ImGui::Text("%s", queue[i].duration.c_str());
+
             ImGui::PopID();
         }
         ImGui::EndTable();
     }
 }
 
-void albumSelectionTab(AppState state, std::vector<SongEntry> &queue, const std::vector<AlbumEntry> &albums)
+void albumSelectionTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index, const std::vector<AlbumEntry> &albums)
 {
     if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
@@ -67,8 +80,11 @@ void albumSelectionTab(AppState state, std::vector<SongEntry> &queue, const std:
             ImGui::TableNextColumn();
             if (ImGui::Selectable(albums[i].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                if (!state.io->KeyShift)
+                if (queue.size() == 0 || !state.io->KeyShift)
+                {
+                    now_playing_index = 0;
                     queue.clear();
+                }
 
                 std::vector<SongEntry> album_songs = getAlbumSongs({albums[i]});
                 queue.insert(queue.end(), album_songs.begin(), album_songs.end());

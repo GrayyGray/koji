@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <optional>
+#include <tuple>
 #include <vector>
 
 #include <SDL3/SDL.h>
@@ -30,8 +31,8 @@ int main(int, char **)
     }
 
     std::vector<AlbumEntry> albums = getAlbums();
-    std::vector<SongEntry>  songs  = getAlbumSongs(albums);
     std::vector<SongEntry>  queue;
+    int                     now_playing_index = -1;
 
     bool done = false;
     while (!done)
@@ -40,24 +41,22 @@ int main(int, char **)
             done = true;
 
         beginMainWindow(state);
-        if (ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None))
+        ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
+        if (beginTab("Queue"))
         {
-            if (beginTab("Queue"))
-            {
-                songQueueTab(state, queue);
-                endTab();
-            }
-            if (beginTab("Albums"))
-            {
-                albumSelectionTab(state, queue, albums);
-                endTab();
-            }
-            if (beginTab("Playlists"))
-            {
-                endTab();
-            }
-            ImGui::EndTabBar();
+            songQueueTab(state, queue, now_playing_index);
+            endTab();
         }
+        if (beginTab("Albums"))
+        {
+            albumSelectionTab(state, queue, now_playing_index, albums);
+            endTab();
+        }
+        if (beginTab("Playlists"))
+        {
+            endTab();
+        }
+        ImGui::EndTabBar();
         endMainWindow(state);
     }
 

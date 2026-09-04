@@ -9,5 +9,5 @@
 #include "app.h"
 #include "library.h"
 
-void songQueueTab(AppState state, std::vector<SongEntry> &queue);
-void albumSelectionTab(AppState state, std::vector<SongEntry> &queue, const std::vector<AlbumEntry> &albums);
+void songQueueTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index);
+void albumSelectionTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index, const std::vector<AlbumEntry> &albums);
