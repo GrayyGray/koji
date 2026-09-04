@@ -57,6 +57,11 @@ int main(int, char **)
             endTab();
         }
         ImGui::EndTabBar();
+        ImGui::Separator();
+        ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        ImGui::ProgressBar(0.5f, ImVec2(200, 0), "");
+        ImGui::EndChild();
+
         endMainWindow(state);
     }
 

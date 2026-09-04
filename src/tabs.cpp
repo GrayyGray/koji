@@ -29,19 +29,15 @@ void songQueueTab(const AppState &state, std::vector<SongEntry> &queue, int &now
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
 
+            if (ImGui::Selectable(queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            {
+                if (queue.size() > 0)
+                    now_playing_index = i;
+            }
+
             if (i != -1 && i == now_playing_index)
             {
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-            }
-
-            if (ImGui::Selectable(queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-            {
-                printf("\nnowplayingindex=%d\n", now_playing_index);
-                printf("i=%d\n", i);
-                if (queue.size() > 0)
-                    now_playing_index = i;
-                printf("nowplayingindex=%d\n", now_playing_index);
-                // OnSongClicked(i);
             }
 
             ImGui::TableNextColumn();
