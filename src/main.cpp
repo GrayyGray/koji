@@ -34,6 +34,8 @@ int main(int, char **)
     std::vector<SongEntry>  queue;
     int                     now_playing_index = -1;
 
+    float item_height = 24.0f;
+
     bool done = false;
     while (!done)
     {
@@ -44,22 +46,29 @@ int main(int, char **)
         ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
         if (beginTab("Queue"))
         {
+            ImGui::Separator();
             songQueueTab(state, queue, now_playing_index);
             endTab();
         }
         if (beginTab("Albums"))
         {
+            ImGui::Separator();
             albumSelectionTab(state, queue, now_playing_index, albums);
             endTab();
         }
         if (beginTab("Playlists"))
         {
+            ImGui::Separator();
             endTab();
         }
         ImGui::EndTabBar();
+
         ImGui::Separator();
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_None);
-        ImGui::ProgressBar(0.5f, ImVec2(200, 0), "");
+
+        float center_y_offset = (ImGui::GetContentRegionAvail().y - item_height) / 2;
+        ImGui::SetCursorPosY(center_y_offset);
+
         ImGui::EndChild();
 
         endMainWindow(state);
