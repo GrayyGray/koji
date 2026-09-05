@@ -1,20 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include <filesystem>
-#include <optional>
 #include <vector>
+#include <optional>
+#include <filesystem>
+#include "imgui.h"
 
 #include "app.h"
-#include "imgui.h"
-#include "imgui_impl_sdl3.h"
-#include "imgui_impl_sdlrenderer3.h"
-#include "player.h"
 #include "tabs.h"
+#include "player.h"
 
 int main(int, char **)
 {
-
     AppState state;
     state.window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
     state.width        = 1280;

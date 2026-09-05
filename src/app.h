@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 
 #include "imgui.h"
+#include "player.h"
 
 struct AppState
 {
@@ -27,5 +28,7 @@ void endMainWindow(const AppState &state);
 
 bool beginTab(const char *label);
 void endTab();
+
+void renderPlayer(const kojiPlayer::PlayerStatus &status);
 
 void cleanup(AppState &state);

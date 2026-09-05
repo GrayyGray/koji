@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include "app.h"
 
 #include <SDL3/SDL.h>
 
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
+
+#include "app.h"
+#include "imgui_utils.h"
+
+
+
+
 
 bool initialize(AppState &state)
 {
@@ -137,6 +143,48 @@ void endTab()
     ImGui::PopItemFlag();
     ImGui::EndChild();
     ImGui::EndTabItem();
+}
+
+struct KeyBinding
+{
+    const char *key;
+    const char *label;
+};
+
+static const KeyBinding K_FOOTER_BINDINGS[] = {{"tab", "cycle tab"}, {"s", "shuffle"}, {"r", "repeat"}, {"space", "play/pause"}, {"x", "stop"}, {"q", "quit"}};
+
+void renderPlayer(const kojiPlayer::PlayerStatus &status)
+{
+    ImGui::Text("%s", status.current_song.title.empty() ? "Nothing playing" : status.current_song.title.c_str());
+    ImGui::SameLine();
+
+    float playing_progress = (status.current_song != kojiPlayer::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
+    std::string duration = status.current_song != kojiPlayer::SongEntry{} ? formatTime(status.current_song.duration) : "--:--";
+    std::string overlay          = formatTime(status.position_seconds) + "/" + duration;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f);
+    ImGui::ProgressBar(playing_progress, ImVec2(200, 20), overlay.c_str());
+    ImGui::PopStyleVar();
+    ImGui::SameLine();
+
+    ImGui::Text("Vol:%d%%", status.volume);
+    ImGui::SameLine();
+
+    ImGui::TextUnformatted(status.shuffle ? "Shuf:On" : "Shuf:Off");
+    ImGui::SameLine();
+
+    const char *repeat_mode = status.repeat_mode ==  kojiPlayer::RepeatMode::Off ? "Rep:Off" : status.repeat_mode ==  kojiPlayer::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+    ImGui::TextUnformatted(repeat_mode);
+
+    ImGui::Separator();
+    for (const auto &b : K_FOOTER_BINDINGS)
+    {
+        ImGui::Text("%s: %s", b.key, b.label);
+        ImGui::SameLine();
+        ImGui::Dummy(ImVec2(12.0f, 0.0f));
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
 }
 
 void cleanup(AppState &state)

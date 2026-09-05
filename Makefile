@@ -1,7 +1,7 @@
 COMPILER = clang++
 EXE = koji
 SOURCES = $(wildcard src/*.cpp)
-BACKEND_DIRECTORY = deps/imgui
+BACKEND_DIRECTORY = dependencies/imgui
 SOURCES += $(BACKEND_DIRECTORY)/imgui.cpp $(BACKEND_DIRECTORY)/imgui_demo.cpp $(BACKEND_DIRECTORY)/imgui_draw.cpp $(BACKEND_DIRECTORY)/imgui_tables.cpp $(BACKEND_DIRECTORY)/imgui_widgets.cpp
 SOURCES += $(BACKEND_DIRECTORY)/backends/imgui_impl_sdl3.cpp $(BACKEND_DIRECTORY)/backends/imgui_impl_sdlrenderer3.cpp
 
