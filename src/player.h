@@ -2,10 +2,9 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #pragma once
 
-#include <filesystem>
-#include <optional>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 namespace kojiPlayer
 {

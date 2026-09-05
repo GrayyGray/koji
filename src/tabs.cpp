@@ -22,29 +22,29 @@ void songQueueTab(const AppState &state, kojiPlayer::PlayerStatus &status)
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-        for (int i = 0; status.queue && i < status.queue->size(); i++)
+        for (int i = 0; i < status.queue.size(); i++)
         {
             ImGui::PushID(i);
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
 
-            if (ImGui::Selectable(status.queue->at(i).album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(status.queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                status.current_song = status.queue->at(i);
+                status.current_song = status.queue[i];
             }
-            if (status.queue->at(i) == status.current_song)
+            if (status.queue[i] == status.current_song)
             {
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
             }
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", status.queue->at(i).title.c_str());
+            ImGui::Text("%s", status.queue[i].title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", status.queue->at(i).album.album_title.c_str());
+            ImGui::Text("%s", status.queue[i].album.album_title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", formatTime(status.queue->at(i).duration).c_str());
+            ImGui::Text("%s", formatTime(status.queue[i].duration).c_str());
 
             ImGui::PopID();
         }
@@ -66,33 +66,30 @@ void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status)
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-        for (int i = 0; i < status.albums->size(); i++)
+        for (int i = 0; i < status.albums.size(); i++)
         {
             ImGui::PushID(i);
             ImGui::TableNextRow();
 
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(status.albums->at(i).artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(status.albums[i].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                if (!state.io->KeyShift && (status.queue && status.queue->size() > 0))
+                if (!state.io->KeyShift && (status.queue.size() > 0))
                 {
-                    status.queue->clear();
+                    status.queue.clear();
                 }
 
-                std::optional<std::vector<SongEntry>> album_songs = getAlbumSongs({status.albums->at(i)});
-                if (!status.queue)
-                    status.queue = std::vector<SongEntry>{};
-
-                if (status.queue->size() == 0)
+                std::vector<kojiPlayer::SongEntry> album_songs = kojiPlayer::getAlbumSongs({status.albums[i]});
+                if (status.queue.size() == 0)
                 {
-                    status.queue->insert(status.queue->end(), album_songs->begin(), album_songs->end());
-                    status.current_song = status.queue->at(0);
+                    status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());
+                    status.current_song = status.queue[0];
                 }
-                else if (album_songs)
-                    status.queue->insert(status.queue->end(), album_songs->begin(), album_songs->end());
+                else
+                    status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());
             }
             ImGui::TableNextColumn();
-            ImGui::Text("%s", status.albums->at(i).album_title.c_str());
+            ImGui::Text("%s", status.albums[i].album_title.c_str());
 
             ImGui::PopID();
         }

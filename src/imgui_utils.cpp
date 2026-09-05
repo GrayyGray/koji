@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
+#include <format>
+#include <algorithm>
 
 #include "imgui_utils.h"
-
-#include <algorithm>
-#include <format>
 
 ImVec4 darkenColor(const ImVec4 &color, float amount)
 {
