@@ -23,7 +23,7 @@ int main(int, char **)
         return 1;
     }
 
-    PlayerStatus player_status;
+    kojiPlayer::PlayerStatus player_status;
 
     bool done = false;
     while (!done)
