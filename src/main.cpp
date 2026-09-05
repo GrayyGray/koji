@@ -3,17 +3,13 @@
 
 #include <filesystem>
 #include <optional>
-#include <tuple>
 #include <vector>
-
-#include <SDL3/SDL.h>
-#include <stdio.h>
 
 #include "app.h"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
-#include "library.h"
+#include "player.h"
 #include "tabs.h"
 
 int main(int, char **)
@@ -30,11 +26,7 @@ int main(int, char **)
         return 1;
     }
 
-    std::vector<AlbumEntry> albums = getAlbums();
-    std::vector<SongEntry>  queue;
-    int                     now_playing_index = -1;
-
-    float item_height = 24.0f;
+    PlayerStatus player_status;
 
     bool done = false;
     while (!done)
@@ -47,13 +39,13 @@ int main(int, char **)
         if (beginTab("Queue"))
         {
             ImGui::Separator();
-            songQueueTab(state, queue, now_playing_index);
+            songQueueTab(state, player_status);
             endTab();
         }
         if (beginTab("Albums"))
         {
             ImGui::Separator();
-            albumSelectionTab(state, queue, now_playing_index, albums);
+            albumSelectionTab(state, player_status);
             endTab();
         }
         if (beginTab("Playlists"))
@@ -64,10 +56,9 @@ int main(int, char **)
         ImGui::EndTabBar();
 
         ImGui::Separator();
-        ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-        float center_y_offset = (ImGui::GetContentRegionAvail().y - item_height) / 2;
-        ImGui::SetCursorPosY(center_y_offset);
+        renderPlayer(player_status);
 
         ImGui::EndChild();
 

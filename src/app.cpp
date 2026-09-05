@@ -12,8 +12,7 @@ bool initialize(AppState &state)
 {
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error",
-                                 "Error initializing SDL3", nullptr);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error initializing SDL3", nullptr);
         return false;
     }
 
@@ -47,8 +46,7 @@ bool initialize(AppState &state)
     ImGui::GetStyle().TabBarBorderSize = 0.0f;
     state.io                           = &ImGui::GetIO();
     state.io->IniFilename              = nullptr;
-    state.io->ConfigFlags |=
-        ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    state.io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark(); // or ImGui::StyleColorsLight();
@@ -56,16 +54,14 @@ bool initialize(AppState &state)
     // Setup imgui scaling
 
     ImGuiStyle &style = ImGui::GetStyle();
-    style.ScaleAllSizes(
-        state.display_content_scale); // Bake a fixed style scale. (until we have
-                                      // a solution for dynamic style scaling,
-                                      // changing this requires resetting Style +
-                                      // calling this again)
-    style.FontScaleDpi =
-        state.display_content_scale; // Set initial font scale. (in docking
-                                     // branch: using io.ConfigDpiScaleFonts=true
-                                     // automatically overrides this for every
-                                     // window depending on the current monitor)
+    style.ScaleAllSizes(state.display_content_scale); // Bake a fixed style scale. (until we have
+                                                      // a solution for dynamic style scaling,
+                                                      // changing this requires resetting Style +
+                                                      // calling this again)
+    style.FontScaleDpi = state.display_content_scale; // Set initial font scale. (in docking
+                                                      // branch: using io.ConfigDpiScaleFonts=true
+                                                      // automatically overrides this for every
+                                                      // window depending on the current monitor)
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL3_InitForSDLRenderer(state.window, state.renderer);
@@ -88,8 +84,7 @@ bool pollEvents(const AppState &state)
             return false;
         }
 
-        if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
-            event.window.windowID == SDL_GetWindowID(state.window))
+        if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED && event.window.windowID == SDL_GetWindowID(state.window))
         {
             return false;
         }

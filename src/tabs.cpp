@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include "imgui_utils.h"
 
-void songQueueTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index)
+void songQueueTab(const AppState &state, PlayerStatus &status)
 {
     const ImVec4 selected_background_color = darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
@@ -23,39 +23,38 @@ void songQueueTab(const AppState &state, std::vector<SongEntry> &queue, int &now
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-        for (int i = 0; i < queue.size(); i++)
+        for (int i = 0; status.queue && i < status.queue->size(); i++)
         {
             ImGui::PushID(i);
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
 
-            if (ImGui::Selectable(queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(status.queue->at(i).album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                if (queue.size() > 0)
-                    now_playing_index = i;
+                status.current_song = status.queue->at(i);
             }
-
-            if (i != -1 && i == now_playing_index)
+            if (status.queue->at(i) == status.current_song)
             {
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
             }
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", queue[i].title.c_str());
+            ImGui::Text("%s", status.queue->at(i).title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", queue[i].album.album_title.c_str());
+            ImGui::Text("%s", status.queue->at(i).album.album_title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", queue[i].duration.c_str());
+            ImGui::Text("%s", formatTime(status.queue->at(i).duration).c_str());
 
             ImGui::PopID();
         }
+
         ImGui::EndTable();
     }
 }
 
-void albumSelectionTab(const AppState &state, std::vector<SongEntry> &queue, int &now_playing_index, const std::vector<AlbumEntry> &albums)
+void albumSelectionTab(const AppState &state, PlayerStatus &status)
 {
     if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
@@ -68,25 +67,33 @@ void albumSelectionTab(const AppState &state, std::vector<SongEntry> &queue, int
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-        for (int i = 0; i < albums.size(); i++)
+        for (int i = 0; i < status.albums->size(); i++)
         {
             ImGui::PushID(i);
             ImGui::TableNextRow();
 
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(albums[i].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(status.albums->at(i).artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                if (queue.size() == 0 || !state.io->KeyShift)
+                if (!state.io->KeyShift && (status.queue && status.queue->size() > 0))
                 {
-                    now_playing_index = 0;
-                    queue.clear();
+                    status.queue->clear();
                 }
 
-                std::vector<SongEntry> album_songs = getAlbumSongs({albums[i]});
-                queue.insert(queue.end(), album_songs.begin(), album_songs.end());
+                std::optional<std::vector<SongEntry>> album_songs = getAlbumSongs({status.albums->at(i)});
+                if (!status.queue)
+                    status.queue = std::vector<SongEntry>{};
+
+                if (status.queue->size() == 0)
+                {
+                    status.queue->insert(status.queue->end(), album_songs->begin(), album_songs->end());
+                    status.current_song = status.queue->at(0);
+                }
+                else if (album_songs)
+                    status.queue->insert(status.queue->end(), album_songs->begin(), album_songs->end());
             }
             ImGui::TableNextColumn();
-            ImGui::Text("%s", albums[i].album_title.c_str());
+            ImGui::Text("%s", status.albums->at(i).album_title.c_str());
 
             ImGui::PopID();
         }
