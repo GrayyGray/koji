@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-
 #include "tabs.h"
 
 #include "imgui.h"
 #include "imgui_utils.h"
 
-void songQueueTab(const AppState &state, PlayerStatus &status)
+void songQueueTab(const AppState &state, kojiPlayer::PlayerStatus &status)
 {
     const ImVec4 selected_background_color = darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
@@ -54,7 +53,7 @@ void songQueueTab(const AppState &state, PlayerStatus &status)
     }
 }
 
-void albumSelectionTab(const AppState &state, PlayerStatus &status)
+void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status)
 {
     if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {

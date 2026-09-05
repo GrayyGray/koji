@@ -3,19 +3,20 @@
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "player.h"
-
-#include <iostream>
-#include <optional>
-#include <regex>
 #include <set>
+#include <regex>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <optional>
 
 #include <mpv/client.h>
+
 #include <taglib/fileref.h>
 
 #include "imgui.h"
+
+#include "player.h"
 #include "imgui_utils.h"
 
 using namespace kojiPlayer;
@@ -40,7 +41,7 @@ std::optional<std::filesystem::path> xdgConfigDir()
     return std::nullopt;
 }
 
-std::optional<std::vector<AlbumEntry>> getAlbums()
+std::vector<AlbumEntry> getAlbums()
 {
     std::vector<AlbumEntry> albums;
 
@@ -79,7 +80,7 @@ std::optional<std::vector<AlbumEntry>> getAlbums()
     return albums;
 }
 
-std::optional<std::vector<SongEntry>> getAlbumSongs(std::vector<AlbumEntry> albums)
+std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
 {
     std::vector<SongEntry> songs;
     for (const auto &album : albums)

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-
 #include <SDL3/SDL.h>
 
 #include "imgui_impl_sdl3.h"
@@ -9,10 +8,6 @@
 
 #include "app.h"
 #include "imgui_utils.h"
-
-
-
-
 
 bool initialize(AppState &state)
 {
