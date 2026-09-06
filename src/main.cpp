@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-
 #include <filesystem>
 #include <optional>
 #include <vector>
-
 #include "app.h"
 #include "imgui.h"
 #include "player.h"
@@ -64,7 +62,6 @@ int main(int, char **)
         {
             player_status.paused = !player_status.paused;
         }
-
 
         ImGui::EndChild();
 

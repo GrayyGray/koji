@@ -3,7 +3,6 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-
 #include "imgui.h"
 #include "player.h"
 

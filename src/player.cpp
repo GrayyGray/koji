@@ -1,26 +1,33 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-
-// SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: 2026 silver_gray
-
 #include "player.h"
-
+#include <format>
 #include <iostream>
 #include <optional>
 #include <regex>
 #include <set>
 #include <string>
 #include <vector>
-
 #include <mpv/client.h>
 #include <taglib/fileref.h>
-
 #include "imgui.h"
-#include "imgui_utils.h"
 
 namespace koji_player
 {
+std::string formatTime(float seconds)
+{
+    if (seconds < 0.0f)
+        return "--:--";
+
+    int total   = static_cast<int>(seconds);
+    int hours   = total / 3600;
+    int minutes = (total % 3600) / 60;
+    int secs    = total % 60;
+
+    if (hours > 0)
+        return std::format("{:02}:{:02}:{:02}", hours, minutes, secs);
+    return std::format("{:02}:{:02}", minutes, secs);
+}
 
 std::optional<std::filesystem::path> xdgConfigDir()
 {
@@ -115,4 +122,5 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
     }
     return songs;
 }
+
 } // namespace koji_player

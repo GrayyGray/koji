@@ -47,4 +47,6 @@ struct PlayerStatus
     SongEntry               current_song     = {};
     std::vector<SongEntry>  queue;
 };
+
+std::string formatTime(float seconds);
 } // namespace koji_player

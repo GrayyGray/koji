@@ -1,9 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "tabs.h"
-
+#include <algorithm>
+#include <format>
 #include "imgui.h"
-#include "imgui_utils.h"
+#include "player.h"
+
+ImVec4 darkenColor(const ImVec4 &color, float amount)
+{
+    float red   = std::max(0.0f, color.x - 0.2f);
+    float green = std::max(0.0f, color.y - 0.2f);
+    float blue  = std::max(0.0f, color.z - 0.2f);
+    return ImVec4(red, green, blue, color.w);
+}
 
 void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
 {
@@ -30,7 +39,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
 
             if (ImGui::Selectable(status.queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                status.paused = false;
+                status.paused       = false;
                 status.current_song = status.queue[i];
             }
             if (status.queue[i] == status.current_song)
@@ -45,7 +54,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
             ImGui::Text("%s", status.queue[i].album.album_title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", formatTime(status.queue[i].duration).c_str());
+            ImGui::Text("%s", koji_player::formatTime(status.queue[i].duration).c_str());
 
             ImGui::PopID();
         }

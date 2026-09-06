@@ -13,7 +13,7 @@ AlignConsecutiveDeclarations:
   Enabled: true
 AlignTrailingComments: true
 SortIncludes: CaseSensitive
-IncludeBlocks: Regroup
+IncludeBlocks: Merge
 IncludeCategories:
   - Regex: '^<[a-z_]+>'
     Priority: 1
