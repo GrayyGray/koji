@@ -5,6 +5,8 @@
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 #include "player.h"
+#include <algorithm>
+#include <random>
 
 bool initialize(AppState &state)
 {
@@ -71,6 +73,35 @@ bool initialize(AppState &state)
     return true;
 }
 
+
+void toggleShuffle(koji_player::PlayerStatus &status)
+{
+    status.shuffle = !status.shuffle;
+
+    if (status.shuffle)
+    {
+        auto rng = std::default_random_engine {};
+        std::ranges::shuffle(status.queue, rng);
+        return;
+    }
+}
+
+void toggleRepeatMode(koji_player::RepeatMode &repeat_mode)
+{
+    if (repeat_mode == koji_player::RepeatMode::Off) 
+    {
+        repeat_mode = koji_player::RepeatMode::All;
+    }
+    else if (repeat_mode == koji_player::RepeatMode::All)
+    {
+        repeat_mode = koji_player::RepeatMode::Track;
+    }
+    else if (repeat_mode == koji_player::RepeatMode::Track)
+    {
+        repeat_mode = koji_player::RepeatMode::Off;
+    }
+}
+
 bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
 {
     SDL_Event event;
@@ -97,11 +128,11 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
         status.paused = !status.paused;
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
-        status.shuffle = !status.shuffle;
+        toggleShuffle(status);
 
-    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
-        status.repeat_mode =  static_cast<koji_player::RepeatMode>((static_cast<int>(status.repeat_mode ) + 1) % static_cast<int>(koji_player::RepeatMode::Track) + 1);
-    
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))  
+        toggleRepeatMode(status.repeat_mode);  
+
     return true;
 }
 
