@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "app.h"
+
 #include <SDL3/SDL.h>
 
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
-
-#include "app.h"
 #include "imgui_utils.h"
 
 bool initialize(AppState &state)
@@ -153,8 +153,8 @@ void renderPlayer(const kojiPlayer::PlayerStatus &status)
     ImGui::Text("%s", status.current_song.title.empty() ? "Nothing playing" : status.current_song.title.c_str());
     ImGui::SameLine();
 
-    float playing_progress = (status.current_song != kojiPlayer::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
-    std::string duration = status.current_song != kojiPlayer::SongEntry{} ? formatTime(status.current_song.duration) : "--:--";
+    float       playing_progress = (status.current_song != kojiPlayer::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
+    std::string duration         = status.current_song != kojiPlayer::SongEntry{} ? formatTime(status.current_song.duration) : "--:--";
     std::string overlay          = formatTime(status.position_seconds) + "/" + duration;
 
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f);
@@ -168,7 +168,7 @@ void renderPlayer(const kojiPlayer::PlayerStatus &status)
     ImGui::TextUnformatted(status.shuffle ? "Shuf:On" : "Shuf:Off");
     ImGui::SameLine();
 
-    const char *repeat_mode = status.repeat_mode ==  kojiPlayer::RepeatMode::Off ? "Rep:Off" : status.repeat_mode ==  kojiPlayer::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+    const char *repeat_mode = status.repeat_mode == kojiPlayer::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == kojiPlayer::RepeatMode::All ? "Rep:All" : "Rep:Trk";
     ImGui::TextUnformatted(repeat_mode);
 
     ImGui::Separator();

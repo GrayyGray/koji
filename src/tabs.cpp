@@ -79,7 +79,7 @@ void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status)
                     status.queue.clear();
                 }
 
-                std::vector<kojiPlayer::SongEntry> album_songs = kojiPlayer::getAlbumSongs({status.albums[i]});
+                std::vector<kojiPlayer::SongEntry> album_songs = kojiPlayer::getAlbumSongs(status.albums[i]);
                 if (status.queue.size() == 0)
                 {
                     status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());

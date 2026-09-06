@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include <vector>
-#include <optional>
 #include <filesystem>
-#include "imgui.h"
+#include <optional>
+#include <vector>
 
 #include "app.h"
-#include "tabs.h"
+#include "imgui.h"
 #include "player.h"
+#include "tabs.h"
 
 int main(int, char **)
 {

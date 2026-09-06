@@ -3,15 +3,15 @@
 
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
+
 #include <set>
 #include <regex>
-#include <string>
 #include <vector>
+#include <string>
 #include <iostream>
 #include <optional>
 
 #include <mpv/client.h>
-
 #include <taglib/fileref.h>
 
 #include "imgui.h"
@@ -19,9 +19,7 @@
 #include "player.h"
 #include "imgui_utils.h"
 
-using namespace kojiPlayer;
-
-
+namespace kojiPlayer {
 
 std::optional<std::filesystem::path> xdgConfigDir()
 {
@@ -80,42 +78,40 @@ std::vector<AlbumEntry> getAlbums()
     return albums;
 }
 
-std::vector<SongEntry> getAlbumSongs(std::vector<AlbumEntry> albums)
+std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
 {
     std::vector<SongEntry> songs;
-    for (const auto &album : albums)
+
+    for (const auto &song : std::filesystem::recursive_directory_iterator(album.path.c_str()))
     {
-        for (const auto &song : std::filesystem::recursive_directory_iterator(album.path.c_str()))
+        if (std::filesystem::is_directory(song))
         {
-            if (std::filesystem::is_directory(song))
-            {
-                continue;
-            }
-
-            std::smatch match;
-            std::string relative_song_path_string = std::filesystem::relative(song.path(), album.path).string();
-
-            if (!std::regex_match(relative_song_path_string, match, std::regex(R"(([0-9]+) - (.+)\.(mp3|wav|flac|ogg|m4a))")))
-            {
-                continue;
-            }
-
-            std::string track_number = match.str(1);
-            std::string song_title   = match.str(2);
-
-            float           duration;
-            TagLib::FileRef song_file(song.path().c_str());
-            if (!song_file.isNull() && song_file.audioProperties() != nullptr)
-            {
-                duration = song_file.audioProperties()->lengthInSeconds();
-            }
-            else
-                duration = 0.0f;
-
-            SongEntry entry = {song.path(), album, track_number, song_title, duration};
-            songs.push_back(entry);
+            continue;
         }
-    }
 
+        std::smatch match;
+        std::string relative_song_path_string = std::filesystem::relative(song.path(), album.path).string();
+
+        if (!std::regex_match(relative_song_path_string, match, std::regex(R"(([0-9]+) - (.+)\.(mp3|wav|flac|ogg|m4a))")))
+        {
+            continue;
+        }
+
+        std::string track_number = match.str(1);
+        std::string song_title   = match.str(2);
+
+        float           duration;
+        TagLib::FileRef song_file(song.path().c_str());
+        if (!song_file.isNull() && song_file.audioProperties() != nullptr)
+        {
+            duration = song_file.audioProperties()->lengthInSeconds();
+        }
+        else
+            duration = 0.0f;
+
+        SongEntry entry = {song.path(), album, track_number, song_title, duration};
+        songs.push_back(entry);
+    }
     return songs;
+}
 }
