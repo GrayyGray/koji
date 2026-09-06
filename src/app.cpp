@@ -100,7 +100,7 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
         status.shuffle = !status.shuffle;
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
-        status.repeat_mode ==  static_cast<koji_player::RepeatMode>((static_cast<int>(status.repeat_mode ) + 1) % static_cast<int>(koji_player::RepeatMode::Track) + 1);
+        status.repeat_mode =  static_cast<koji_player::RepeatMode>((static_cast<int>(status.repeat_mode ) + 1) % static_cast<int>(koji_player::RepeatMode::Track) + 1);
     
     return true;
 }
