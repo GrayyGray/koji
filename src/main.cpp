@@ -53,10 +53,9 @@ int main(int, char **)
         ImGui::EndTabBar();
 
         ImGui::Separator();
+        
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
         renderPlayer(player_status);
-
         ImGui::EndChild();
 
         endMainWindow(state);

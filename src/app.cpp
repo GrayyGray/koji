@@ -96,6 +96,9 @@ bool pollEvents(const AppState &state)
         SDL_Delay(10);
     }
 
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
+        return false;
+
     return true;
 }
 
