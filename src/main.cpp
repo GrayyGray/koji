@@ -53,9 +53,19 @@ int main(int, char **)
         ImGui::EndTabBar();
 
         ImGui::Separator();
-        
+
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
         renderPlayer(player_status);
+        if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
+        {
+            player_status.current_song = {};
+        }
+        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
+        {
+            player_status.paused = !player_status.paused;
+        }
+
+
         ImGui::EndChild();
 
         endMainWindow(state);

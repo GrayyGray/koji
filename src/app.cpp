@@ -68,7 +68,7 @@ bool initialize(AppState &state)
     ImGui_ImplSDL3_InitForSDLRenderer(state.window, state.renderer);
     ImGui_ImplSDLRenderer3_Init(state.renderer);
 
-    state.io->Fonts->AddFontFromFileTTF("assets/NotoSans-Regular.ttf", 18.0f);
+    state.io->Fonts->AddFontFromFileTTF("assets/GoNotoCurrent-Regular.ttf", 18.0f);
 
     SDL_ShowWindow(state.window);
     return true;
@@ -149,11 +149,10 @@ struct KeyBinding
     const char *label;
 };
 
-static const KeyBinding K_FOOTER_BINDINGS[] = {{"tab", "cycle tab"}, {"s", "shuffle"}, {"r", "repeat"}, {"space", "play/pause"}, {"x", "stop"}, {"q", "quit"}};
-
 void renderPlayer(const koji_player::PlayerStatus &status)
 {
-    ImGui::Text("%s", status.current_song.title.empty() ? "Nothing playing" : status.current_song.title.c_str());
+    ImGui::SameLine();
+    ImGui::Text("%s %s", status.current_song == koji_player::SongEntry{} ? "⏹" : status.paused ? "⏸" : "⯈", status.current_song.title.empty() ? "nothing playing" : status.current_song.title.c_str());
     ImGui::SameLine();
 
     float       playing_progress = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
@@ -174,15 +173,9 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     const char *repeat_mode = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
     ImGui::TextUnformatted(repeat_mode);
 
-    ImGui::Separator();
-    for (const auto &b : K_FOOTER_BINDINGS)
-    {
-        ImGui::Text("%s: %s", b.key, b.label);
-        ImGui::SameLine();
-        ImGui::Dummy(ImVec2(12.0f, 0.0f));
-        ImGui::SameLine();
-    }
-    ImGui::NewLine();
+    ImGui::Separator();    
+    ImGui::Text("shift+click: add to queue   tab: cycle tabs   s: shuffle   r: repeat   space: play/pause   x: stop   q: quit");
+
 }
 
 void cleanup(AppState &state)

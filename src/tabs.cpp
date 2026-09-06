@@ -30,6 +30,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
 
             if (ImGui::Selectable(status.queue[i].album.artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
+                status.paused = false;
                 status.current_song = status.queue[i];
             }
             if (status.queue[i] == status.current_song)
@@ -76,6 +77,7 @@ void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
             {
                 if (!state.io->KeyShift && (status.queue.size() > 0))
                 {
+                    status.paused = false;
                     status.queue.clear();
                 }
 
