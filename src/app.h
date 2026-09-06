@@ -20,7 +20,7 @@ struct AppState
 
 bool initialize(AppState &state);
 
-bool pollEvents(const AppState &state);
+bool pollEvents(const AppState &state, koji_player::PlayerStatus &status);
 
 void beginMainWindow(const AppState &state);
 void endMainWindow(const AppState &state);

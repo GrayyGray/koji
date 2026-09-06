@@ -26,7 +26,7 @@ int main(int, char **)
     bool done = false;
     while (!done)
     {
-        if (!pollEvents(state))
+        if (!pollEvents(state, player_status))
             done = true;
 
         beginMainWindow(state);
@@ -54,22 +54,6 @@ int main(int, char **)
 
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
         renderPlayer(player_status);
-        if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
-        {
-            player_status.current_song = {};
-        }
-        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
-        {
-            player_status.paused = !player_status.paused;
-        }
-        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
-        {
-            player_status.shuffle = !player_status.shuffle;
-        }
-        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
-        {
-            
-        }
         ImGui::EndChild();
 
         endMainWindow(state);

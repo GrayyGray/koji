@@ -71,31 +71,37 @@ bool initialize(AppState &state)
     return true;
 }
 
-bool pollEvents(const AppState &state)
+bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
         ImGui_ImplSDL3_ProcessEvent(&event);
         if (event.type == SDL_EVENT_QUIT)
-        {
             return false;
-        }
 
         if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED && event.window.windowID == SDL_GetWindowID(state.window))
-        {
             return false;
-        }
     }
 
     if (SDL_GetWindowFlags(state.window) & SDL_WINDOW_MINIMIZED)
-    {
         SDL_Delay(10);
-    }
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
         return false;
 
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
+        status.current_song = {};
+
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
+        status.paused = !status.paused;
+
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
+        status.shuffle = !status.shuffle;
+
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
+        status.repeat_mode ==  static_cast<koji_player::RepeatMode>((static_cast<int>(status.repeat_mode ) + 1) % static_cast<int>(koji_player::RepeatMode::Track) + 1);
+    
     return true;
 }
 
