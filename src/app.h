@@ -29,6 +29,6 @@ void endMainWindow(const AppState &state);
 bool beginTab(const char *label);
 void endTab();
 
-void renderPlayer(const kojiPlayer::PlayerStatus &status);
+void renderPlayer(const koji_player::PlayerStatus &status);
 
 void cleanup(AppState &state);

@@ -4,22 +4,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include <set>
-#include <regex>
-#include <vector>
-#include <string>
+#include "player.h"
+
 #include <iostream>
 #include <optional>
+#include <regex>
+#include <set>
+#include <string>
+#include <vector>
 
 #include <mpv/client.h>
 #include <taglib/fileref.h>
 
 #include "imgui.h"
-
-#include "player.h"
 #include "imgui_utils.h"
 
-namespace kojiPlayer {
+namespace koji_player
+{
 
 std::optional<std::filesystem::path> xdgConfigDir()
 {
@@ -114,4 +115,4 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
     }
     return songs;
 }
-}
+} // namespace koji_player

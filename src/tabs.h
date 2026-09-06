@@ -5,5 +5,5 @@
 #include "app.h"
 #include "player.h"
 
-void songQueueTab(const AppState &state, kojiPlayer::PlayerStatus &status);
-void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status);
+void songQueueTab(const AppState &state, koji_player::PlayerStatus &status);
+void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status);

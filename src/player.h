@@ -2,11 +2,11 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
-#include <filesystem>
 
-namespace kojiPlayer
+namespace koji_player
 {
 struct AlbumEntry
 {
@@ -47,4 +47,4 @@ struct PlayerStatus
     SongEntry               current_song     = {};
     std::vector<SongEntry>  queue;
 };
-} // namespace kojiPlayer
+} // namespace koji_player

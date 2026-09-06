@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "imgui_utils.h"
 
-void songQueueTab(const AppState &state, kojiPlayer::PlayerStatus &status)
+void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
 {
     const ImVec4 selected_background_color = darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
@@ -53,7 +53,7 @@ void songQueueTab(const AppState &state, kojiPlayer::PlayerStatus &status)
     }
 }
 
-void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status)
+void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
 {
     if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
@@ -79,7 +79,7 @@ void albumSelectionTab(const AppState &state, kojiPlayer::PlayerStatus &status)
                     status.queue.clear();
                 }
 
-                std::vector<kojiPlayer::SongEntry> album_songs = kojiPlayer::getAlbumSongs(status.albums[i]);
+                std::vector<koji_player::SongEntry> album_songs = koji_player::getAlbumSongs(status.albums[i]);
                 if (status.queue.size() == 0)
                 {
                     status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());
