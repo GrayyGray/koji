@@ -62,7 +62,14 @@ int main(int, char **)
         {
             player_status.paused = !player_status.paused;
         }
-
+        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
+        {
+            player_status.shuffle = !player_status.shuffle;
+        }
+        else if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
+        {
+            
+        }
         ImGui::EndChild();
 
         endMainWindow(state);
