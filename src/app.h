@@ -4,7 +4,11 @@
 
 #include <SDL3/SDL.h>
 #include "imgui.h"
-#include "player.h"
+
+namespace koji_player
+{
+struct PlayerStatus;
+}
 
 struct AppState
 {
@@ -18,7 +22,7 @@ struct AppState
     int             scaledWidth, scaledHeight;
 };
 
-bool initialize(AppState &state);
+bool initializeApp(AppState &state);
 
 bool pollEvents(const AppState &state, koji_player::PlayerStatus &status);
 
@@ -30,4 +34,4 @@ void endTab();
 
 void renderPlayer(const koji_player::PlayerStatus &status);
 
-void cleanup(AppState &state);
+void cleanupApp(AppState &state);

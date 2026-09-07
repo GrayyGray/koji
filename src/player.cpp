@@ -8,13 +8,15 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <SDL3/SDL.h>
 #include <mpv/client.h>
 #include <taglib/fileref.h>
+#include "app.h"
 #include "imgui.h"
 
 namespace koji_player
 {
-std::string formatTime(float seconds)
+std::string formatTime(const float seconds)
 {
     if (seconds < 0.0f)
         return "--:--";
@@ -27,6 +29,16 @@ std::string formatTime(float seconds)
     if (hours > 0)
         return std::format("{:02}:{:02}:{:02}", hours, minutes, secs);
     return std::format("{:02}:{:02}", minutes, secs);
+}
+
+int indexSong(const std::vector<SongEntry> &songs, const SongEntry &song)
+{
+    std::vector<SongEntry>::const_iterator iterator = std::find(songs.begin(), songs.end(), song);
+
+    if (iterator == songs.end())
+        return -1;
+
+    return std::distance(songs.begin(), iterator);
 }
 
 std::optional<std::filesystem::path> xdgConfigDir()
@@ -86,7 +98,7 @@ std::vector<AlbumEntry> getAlbums()
     return albums;
 }
 
-std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
+std::vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 {
     std::vector<SongEntry> songs;
 
@@ -123,6 +135,34 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
     return songs;
 }
 
+bool initializePlayer(AppState &state, PlayerStatus &status)
+{
+    status.mpv_context = mpv_create();
+
+    if (!status.mpv_context)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating mpv context", state.window);
+        cleanupApp(state);
+        cleanupPlayer(status);
+        return false;
+    }
+
+    if (mpv_initialize(status.mpv_context) != 0)
+    {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error initializing mpv", state.window);
+        cleanupApp(state);
+        cleanupPlayer(status);
+        return false;
+    }
+
+    mpv_set_option_string(status.mpv_context, "vo", "null");
+    mpv_set_option_string(status.mpv_context, "audio-format", "s16le");
+
+    return true;
+}
+
+void cleanupPlayer(PlayerStatus &status) { mpv_destroy(status.mpv_context); }
+
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
 {
     if (status.shuffle)
@@ -136,4 +176,55 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
     if (status.queue.size() == 0)
         status.current_song = status.queue[0];
 }
+
+void playSong(PlayerStatus &status)
+{
+    status.paused = false;
+    mpv_set_property_string(status.mpv_context, "path", status.current_song.path.c_str());
+    mpv_set_property_string(status.mpv_context, "pause", "no");
+}
+void updatePlayerPause(PlayerStatus &status)
+{
+    if (status.paused)
+        mpv_set_property_string(status.mpv_context, "pause", "yes");
+    else
+        mpv_set_property_string(status.mpv_context, "pause", "no");
+}
+void stopSong(PlayerStatus &status)
+{
+    status.paused = true;
+    mpv_set_property_string(status.mpv_context, "pause", "yes");
+    mpv_set_property_string(status.mpv_context, "seek", "0");
+}
+
+void handleSongCycle(PlayerStatus &status)
+{
+    if (status.position_seconds == status.current_song.duration)
+    {
+        int current_song_index = indexSong(status.queue, status.current_song);
+
+        if (current_song_index + 1 > status.queue.size())
+            status.current_song = status.queue[0];
+        else
+            status.current_song = status.queue[current_song_index + 1];
+    }
+}
+
+void runPlayer(PlayerStatus &status)
+{
+    if (status.current_song == SongEntry{})
+        return;
+
+    double time_remaining;
+    mpv_get_property(status.mpv_context, "time-remaining", MPV_FORMAT_DOUBLE, &time_remaining);
+    status.position_seconds = static_cast<float>(time_remaining);
+
+    handleSongCycle(status);
+
+    if (!status.paused)
+    {
+        playSong(status);
+    }
+}
+
 } // namespace koji_player

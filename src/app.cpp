@@ -8,7 +8,7 @@
 #include "imgui_impl_sdlrenderer3.h"
 #include "player.h"
 
-bool initialize(AppState &state)
+bool initializeApp(AppState &state)
 {
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
@@ -24,7 +24,7 @@ bool initialize(AppState &state)
     if (!state.window)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", state.window);
-        cleanup(state);
+        cleanupApp(state);
         return false;
     }
 
@@ -32,7 +32,7 @@ bool initialize(AppState &state)
     if (!state.renderer)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating renderer", state.window);
-        cleanup(state);
+        cleanupApp(state);
         return false;
     }
 
@@ -59,6 +59,12 @@ bool initialize(AppState &state)
 
     SDL_ShowWindow(state.window);
     return true;
+}
+
+void togglePause(koji_player::PlayerStatus &status)
+{
+    status.paused = !status.paused;
+    koji_player::updatePlayerPause(status);
 }
 
 void toggleShuffle(koji_player::PlayerStatus &status)
@@ -114,10 +120,13 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
         return false;
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
+    {
+        koji_player::stopSong(status);
         status.current_song = {};
+    }
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
-        status.paused = !status.paused;
+        togglePause(status);
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
         toggleShuffle(status);
@@ -203,7 +212,7 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::Text("shift+click: add to queue   tab: cycle tabs   s: shuffle   r: repeat   space: play/pause   x: stop   q: quit");
 }
 
-void cleanup(AppState &state)
+void cleanupApp(AppState &state)
 {
     ImGui_ImplSDLRenderer3_Shutdown();
     ImGui_ImplSDL3_Shutdown();

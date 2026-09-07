@@ -7,9 +7,14 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <mpv/client.h>
+
+struct AppState;
 
 namespace koji_player
 {
+std::string formatTime(const float seconds);
+
 struct AlbumEntry
 {
     std::filesystem::path path;
@@ -29,7 +34,7 @@ struct SongEntry
 };
 
 std::vector<AlbumEntry> getAlbums();
-std::vector<SongEntry>  getAlbumSongs(const AlbumEntry album);
+std::vector<SongEntry>  getAlbumSongs(const AlbumEntry &album);
 
 enum class RepeatMode
 {
@@ -40,19 +45,28 @@ enum class RepeatMode
 
 struct PlayerStatus
 {
-    int                     volume           = 35;
-    bool                    paused           = false;
-    bool                    shuffle          = false;
-    float                   position_seconds = 0.0f;
-    RepeatMode              repeat_mode      = RepeatMode::All;
-    std::vector<AlbumEntry> albums           = getAlbums();
-    SongEntry               current_song     = {};
+    // Playback state
+    int        volume           = 35;
+    bool       paused           = false;
+    bool       shuffle          = false;
+    float      position_seconds = 0.0f;
+    RepeatMode repeat_mode      = RepeatMode::All;
+
+    // Library and queue
+    std::vector<AlbumEntry> albums       = getAlbums();
+    SongEntry               current_song = {};
     std::vector<SongEntry>  queue;
     std::vector<SongEntry>  unshuffled_queue;
-    std::mt19937            random_engine{std::random_device{}()};
+
+    // Runtime
+    std::mt19937 random_engine{std::random_device{}()};
+    mpv_handle  *mpv_context = nullptr;
 };
 
+bool initializePlayer(AppState &state, PlayerStatus &status);
+void cleanupPlayer(PlayerStatus &status);
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
-
-std::string formatTime(float seconds);
+void updatePlayerPause(PlayerStatus &status);
+void stopSong(PlayerStatus &status);
+void runPlayer(PlayerStatus &status);
 } // namespace koji_player

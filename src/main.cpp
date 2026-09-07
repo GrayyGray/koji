@@ -16,17 +16,22 @@ int main(int, char **)
     state.height       = 720;
     state.title        = "koji";
 
-    if (!initialize(state))
+    if (!initializeApp(state))
     {
         return 1;
     }
 
-    koji_player::PlayerStatus player_status;
+    koji_player::PlayerStatus status;
+
+    if (!koji_player::initializePlayer(state, status))
+    {
+        return 1;
+    }
 
     bool done = false;
     while (!done)
     {
-        if (!pollEvents(state, player_status))
+        if (!pollEvents(state, status))
             done = true;
 
         beginMainWindow(state);
@@ -34,13 +39,13 @@ int main(int, char **)
         if (beginTab("Queue"))
         {
             ImGui::Separator();
-            songQueueTab(state, player_status);
+            songQueueTab(state, status);
             endTab();
         }
         if (beginTab("Albums"))
         {
             ImGui::Separator();
-            albumSelectionTab(state, player_status);
+            albumSelectionTab(state, status);
             endTab();
         }
         if (beginTab("Playlists"))
@@ -53,12 +58,14 @@ int main(int, char **)
         ImGui::Separator();
 
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-        renderPlayer(player_status);
+        renderPlayer(status);
+        koji_player::runPlayer(status);
         ImGui::EndChild();
 
         endMainWindow(state);
     }
 
-    cleanup(state);
+    cleanupApp(state);
+    cleanupPlayer(status);
     return 0;
 }
