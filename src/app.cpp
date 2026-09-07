@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "app.h"
+#include <algorithm>
+#include <random>
 #include <SDL3/SDL.h>
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 #include "player.h"
-#include <algorithm>
-#include <random>
 
 bool initialize(AppState &state)
 {
@@ -61,8 +61,7 @@ bool initialize(AppState &state)
     return true;
 }
 
-
-void toggleShuffle(koji_player::PlayerStatus& status)
+void toggleShuffle(koji_player::PlayerStatus &status)
 {
     status.shuffle = !status.shuffle;
 
@@ -81,7 +80,7 @@ void toggleShuffle(koji_player::PlayerStatus& status)
 
 void toggleRepeatMode(koji_player::RepeatMode &repeat_mode)
 {
-    if (repeat_mode == koji_player::RepeatMode::Off) 
+    if (repeat_mode == koji_player::RepeatMode::Off)
     {
         repeat_mode = koji_player::RepeatMode::All;
     }
@@ -123,8 +122,8 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
         toggleShuffle(status);
 
-    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))  
-        toggleRepeatMode(status.repeat_mode);  
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
+        toggleRepeatMode(status.repeat_mode);
 
     return true;
 }

@@ -2,11 +2,11 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #pragma once
 
+#include <algorithm>
 #include <filesystem>
+#include <random>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <random>
 
 namespace koji_player
 {
@@ -48,8 +48,8 @@ struct PlayerStatus
     std::vector<AlbumEntry> albums           = getAlbums();
     SongEntry               current_song     = {};
     std::vector<SongEntry>  queue;
-    std::vector<SongEntry>   unshuffled_queue;
-    std::mt19937 random_engine{std::random_device{}()};
+    std::vector<SongEntry>  unshuffled_queue;
+    std::mt19937            random_engine{std::random_device{}()};
 };
 
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
