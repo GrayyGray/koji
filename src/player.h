@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 namespace koji_player
 {
@@ -46,7 +48,11 @@ struct PlayerStatus
     std::vector<AlbumEntry> albums           = getAlbums();
     SongEntry               current_song     = {};
     std::vector<SongEntry>  queue;
+    std::vector<SongEntry>   unshuffled_queue;
+    std::mt19937 random_engine{std::random_device{}()};
 };
+
+void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
 
 std::string formatTime(float seconds);
 } // namespace koji_player

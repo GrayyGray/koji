@@ -91,13 +91,7 @@ void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
                 }
 
                 std::vector<koji_player::SongEntry> album_songs = koji_player::getAlbumSongs(status.albums[i]);
-                if (status.queue.size() == 0)
-                {
-                    status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());
-                    status.current_song = status.queue[0];
-                }
-                else
-                    status.queue.insert(status.queue.end(), album_songs.begin(), album_songs.end());
+                koji_player::addSongsToQueue(status, album_songs);
             }
             ImGui::TableNextColumn();
             ImGui::Text("%s", status.albums[i].album_title.c_str());

@@ -123,4 +123,17 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry album)
     return songs;
 }
 
+void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
+{
+    if (status.shuffle)
+    {
+        status.unshuffled_queue.insert(status.unshuffled_queue.end(), songs.begin(), songs.end());
+        std::ranges::shuffle(songs, status.random_engine);
+    }
+
+    status.queue.insert(status.queue.end(), songs.begin(), songs.end());
+
+    if (status.queue.size() == 0)
+        status.current_song = status.queue[0];
+}
 } // namespace koji_player
