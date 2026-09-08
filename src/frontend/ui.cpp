@@ -66,7 +66,7 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     std::string duration_time     = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
 
     float playing_progress    = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
-    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 3.0f;
+    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
 
