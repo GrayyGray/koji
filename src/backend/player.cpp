@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "player.h"
 #include <format>
 #include <iostream>
 #include <optional>
@@ -11,11 +12,8 @@
 #include <SDL3/SDL.h>
 #include <mpv/client.h>
 #include <taglib/fileref.h>
-#include "imgui.h"
-
 #include "app.h"
-#include "player.h"
-
+#include "imgui.h"
 
 namespace koji_player
 {
@@ -111,10 +109,7 @@ void updatePause(const PlayerStatus &status)
         mpv_set_property_string(status.mpv_context, "pause", "no");
 }
 
-void updateVolume(const PlayerStatus &status)
-{
-    mpv_set_property_string(status.mpv_context, "volume", std::to_string(status.volume).c_str());
-}
+void updateVolume(const PlayerStatus &status) { mpv_set_property_string(status.mpv_context, "volume", std::to_string(status.volume).c_str()); }
 
 void stopSong(PlayerStatus &status)
 {
@@ -135,9 +130,8 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
         status.current_song = songs[0];
 
     status.queue.insert(status.queue.end(), songs.begin(), songs.end());
-    updateCurrentSong(status);    
+    updateCurrentSong(status);
 }
-
 
 void cycleSong(PlayerStatus &status)
 {
@@ -147,7 +141,7 @@ void cycleSong(PlayerStatus &status)
         status.current_song = status.queue[0];
     else
         status.current_song = status.queue[current_song_index + 1];
-    
+
     updateCurrentSong(status);
 }
 
@@ -176,7 +170,7 @@ bool songCycle(PlayerStatus &status)
 bool keyCycle(PlayerStatus &status)
 {
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
-            return false;
+        return false;
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
     {
@@ -215,7 +209,7 @@ bool pollEvents(PlayerStatus &status)
 
     if (!keyCycle(status))
         return false;
-        
+
     return true;
 }
 

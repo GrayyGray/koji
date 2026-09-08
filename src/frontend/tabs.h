@@ -8,6 +8,5 @@ namespace koji_ui
 {
 void songQueueTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
 void albumSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
+void playlistSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
 } // namespace koji_ui
-
-

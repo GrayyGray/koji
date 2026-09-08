@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include <SDL3/SDL.h>
+#include "../backend/app.h"
+#include "../backend/player.h"
+#include "../backend/utils.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
-
-#include "../backend/app.h"
-#include "../backend/utils.h"
-#include "../backend/player.h"
 
 namespace koji_ui
 {
@@ -60,14 +59,14 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::SameLine();
 
     const char *shuffle_mode = status.shuffle ? "Shuf:On" : "Shuf:Off";
-    const char *repeat_mode = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+    const char *repeat_mode  = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
 
     std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
-    std::string position_time = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.position_seconds) : "--:--";
-    std::string duration_time = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
+    std::string position_time     = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.position_seconds) : "--:--";
+    std::string duration_time     = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
 
-    float       playing_progress = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
-    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x +ImGui::GetStyle().ItemSpacing.x * 3.0f;
+    float playing_progress    = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
+    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 3.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
 
@@ -84,7 +83,6 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::TextUnformatted(shuffle_mode);
     ImGui::SameLine();
 
-    
     ImGui::TextUnformatted(repeat_mode);
 
     ImGui::Separator();
@@ -93,4 +91,3 @@ void renderPlayer(const koji_player::PlayerStatus &status)
 }
 
 } // namespace koji_ui
-

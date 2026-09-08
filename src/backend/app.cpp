@@ -78,7 +78,7 @@ bool pollEvents(const AppState &state)
 
     if (SDL_GetWindowFlags(state.window) & SDL_WINDOW_MINIMIZED)
         SDL_Delay(10);
-    
+
     return true;
 }
 

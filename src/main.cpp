@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "backend/app.h"
+#include "backend/library.h"
 #include "backend/player.h"
 #include "frontend/tabs.h"
 #include "frontend/ui.h"
-#include "backend/library.h"
 #include "imgui.h"
 
 int main(int, char **)
@@ -34,7 +34,6 @@ int main(int, char **)
         koji_player::cleanup(status);
         return 1;
     }
-        
 
     bool done = false;
     while (!done)
@@ -61,6 +60,7 @@ int main(int, char **)
         if (koji_ui::beginTab("Playlists"))
         {
             ImGui::Separator();
+            koji_ui::playlistSelectionTab(state, status);
             koji_ui::endTab();
         }
         ImGui::EndTabBar();

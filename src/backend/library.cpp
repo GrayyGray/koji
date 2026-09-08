@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 silver_gray
 #include "library.h"
-#include <optional>
+#include <fstream>
 #include <iostream>
-#include <regex>
+#include <optional>
 #include <taglib/fileref.h>
 
 namespace koji_library
@@ -43,17 +45,16 @@ std::vector<koji_player::AlbumEntry> getAlbums()
             continue;
         }
 
-        std::smatch match;
-        std::string relative_album_path_string = std::filesystem::relative(album.path(), album_directory).string();
-        if (!std::regex_match(relative_album_path_string, match, std::regex(R"(([^/]+)/([^/]+))")))
-        {
+        std::string            relative_album_path_string = std::filesystem::relative(album.path(), album_directory).string();
+        std::string::size_type slash_positon              = relative_album_path_string.find('/');
+
+        if (slash_positon == std::string::npos)
             continue;
-        }
 
-        std::string artist      = match.str(1);
-        std::string album_title = match.str(2);
+        std::string artist      = relative_album_path_string.substr(0, slash_positon);
+        std::string album_title = relative_album_path_string.substr(slash_positon + 1);
 
-        koji_player::AlbumEntry entry = {album.path(), artist, album_title};
+        koji_player::AlbumEntry entry = {album.path(), album_title, artist};
         if (find(albums.begin(), albums.end(), entry) == albums.end())
         {
             albums.push_back(entry);
@@ -61,6 +62,39 @@ std::vector<koji_player::AlbumEntry> getAlbums()
     }
 
     return albums;
+}
+
+std::vector<koji_player::PlaylistEntry> getPlaylists()
+{
+    std::vector<koji_player::PlaylistEntry> playlists;
+
+    std::optional<std::filesystem::path> xdg_config_directory = xdgConfigDir();
+    if (!xdg_config_directory)
+    {
+        std::cout << "xdg config directory locate failed" << std::endl;
+        return playlists;
+    }
+    std::filesystem::path playlists_directory = *xdg_config_directory / "koji" / "playlists";
+
+    for (const auto &playlist : std::filesystem::directory_iterator(playlists_directory))
+    {
+        if (std::filesystem::is_directory(playlist))
+        {
+            continue;
+        }
+
+        std::string            relative_album_path_string = std::filesystem::relative(playlist.path(), playlists_directory).string();
+        std::string::size_type dot_positon                = relative_album_path_string.find('.');
+        std::string            playlist_title             = relative_album_path_string.substr(0, dot_positon);
+
+        koji_player::PlaylistEntry entry = {playlist.path(), playlist_title};
+        if (find(playlists.begin(), playlists.end(), entry) == playlists.end())
+        {
+            playlists.push_back(entry);
+        }
+    }
+
+    return playlists;
 }
 
 std::vector<koji_player::SongEntry> getAlbumSongs(const koji_player::AlbumEntry &album)
@@ -73,28 +107,81 @@ std::vector<koji_player::SongEntry> getAlbumSongs(const koji_player::AlbumEntry 
         {
             continue;
         }
-
-        std::smatch match;
         std::string relative_song_path_string = std::filesystem::relative(song.path(), album.path).string();
 
-        if (!std::regex_match(relative_song_path_string, match, std::regex(R"(([0-9]+) - (.+)\.(mp3|wav|flac|ogg|m4a))")))
-        {
+        std::string::size_type track_separator     = relative_song_path_string.find(" - ");
+        std::string::size_type extension_separator = relative_song_path_string.rfind('.');
+
+        if (track_separator == std::string::npos)
             continue;
-        }
+        if (extension_separator == std::string::npos)
+            continue;
 
-        std::string track_number = match.str(1);
-        std::string song_title   = match.str(2);
+        std::string song_title = relative_song_path_string.substr(track_separator + 3, extension_separator - (track_separator + 3));
 
-        float           duration;
         TagLib::FileRef song_file(song.path().c_str());
+
+        std::string artist;
+        if (!song_file.isNull() && song_file.tag())
+            artist = song_file.tag()->artist().to8Bit(true);
+        else
+            continue;
+
+        float duration;
         if (!song_file.isNull() && song_file.audioProperties() != nullptr)
-        {
             duration = song_file.audioProperties()->lengthInSeconds();
+        else
+            continue;
+
+        koji_player::SongEntry entry = {song.path(), artist, album.title, song_title, duration};
+        songs.push_back(entry);
+    }
+    return songs;
+}
+
+std::vector<koji_player::SongEntry> getPlaylistSongs(const koji_player::PlaylistEntry &playlist)
+{
+    std::vector<koji_player::SongEntry> songs;
+
+    std::ifstream playlist_file(playlist.path);
+
+    if (!playlist_file)
+        return songs;
+
+    std::optional<std::filesystem::path> xdg_config_directory = xdgConfigDir();
+    if (!xdg_config_directory)
+    {
+        std::cout << "xdg config directory locate failed" << std::endl;
+        return songs;
+    }
+    
+    std::filesystem::path songs_directory = *xdg_config_directory / "koji" / "playlists" / "songs";
+
+    std::string song_title;
+
+    while (std::getline(playlist_file, song_title))
+    {
+        std::filesystem::path song_path = songs_directory / song_title;
+
+        TagLib::FileRef song_file(song_path.c_str());
+
+        std::string artist;
+        std::string album;
+        if (!song_file.isNull() && song_file.tag())
+        {
+            artist = song_file.tag()->artist().to8Bit(true);
+            album  = song_file.tag()->album().to8Bit(true);
         }
         else
-            duration = 0.0f;
+            continue;
 
-        koji_player::SongEntry entry = {song.path(), album, track_number, song_title, duration};
+        float duration;
+        if (!song_file.isNull() && song_file.audioProperties() != nullptr)
+            duration = song_file.audioProperties()->lengthInSeconds();
+        else
+            continue;
+
+        koji_player::SongEntry entry = {song_path, artist, album, song_title, duration};
         songs.push_back(entry);
     }
     return songs;
@@ -102,7 +189,8 @@ std::vector<koji_player::SongEntry> getAlbumSongs(const koji_player::AlbumEntry 
 
 bool initialize(koji_player::PlayerStatus &status)
 {
-    status.albums = getAlbums();
+    status.albums    = getAlbums();
+    status.playlists = getPlaylists();
     return true;
 }
 } // namespace koji_library

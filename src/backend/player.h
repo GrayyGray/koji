@@ -6,9 +6,9 @@
 #include <filesystem>
 #include <random>
 #include <string>
+#include <variant>
 #include <vector>
 #include <mpv/client.h>
-
 #include "app.h"
 
 namespace koji_player
@@ -16,16 +16,23 @@ namespace koji_player
 struct AlbumEntry
 {
     std::filesystem::path path;
+    std::string           title;
     std::string           artist;
-    std::string           album_title;
     bool                  operator==(const AlbumEntry &) const = default;
+};
+
+struct PlaylistEntry
+{
+    std::filesystem::path path;
+    std::string           title;
+    bool                  operator==(const PlaylistEntry &) const = default;
 };
 
 struct SongEntry
 {
     std::filesystem::path path;
-    AlbumEntry            album;
-    std::string           track_number;
+    std::string           artist;
+    std::string           album;
     std::string           title;
     float                 duration;
     bool                  operator==(const SongEntry &) const = default;
@@ -46,10 +53,11 @@ struct PlayerStatus
     float      position_seconds = 0.0f;
     RepeatMode repeat_mode      = RepeatMode::All;
 
-    std::vector<AlbumEntry> albums;
-    SongEntry               current_song = {};
-    std::vector<SongEntry>  queue;
-    std::vector<SongEntry>  unshuffled_queue;
+    std::vector<AlbumEntry>    albums;
+    std::vector<PlaylistEntry> playlists;
+    SongEntry                  current_song = {};
+    std::vector<SongEntry>     queue;
+    std::vector<SongEntry>     unshuffled_queue;
 
     std::mt19937 random_engine{std::random_device{}()};
     mpv_handle  *mpv_context = nullptr;

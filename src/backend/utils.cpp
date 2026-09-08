@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "imgui.h"
-#include <format>
 #include <algorithm>
+#include <format>
+#include "imgui.h"
 
 namespace koji_utils
 {
@@ -29,4 +29,3 @@ ImVec4 darkenColor(const ImVec4 &color, float amount)
     return ImVec4(red, green, blue, color.w);
 }
 } // namespace koji_utils
-

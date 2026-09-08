@@ -13,6 +13,3 @@ void endTab();
 
 void renderPlayer(const koji_player::PlayerStatus &status);
 } // namespace koji_ui
-
-
-
