@@ -36,6 +36,24 @@ void songQueueTab(const koji_app::AppState &state, koji_player::PlayerStatus &st
                 status.current_song = status.queue[i];
                 koji_player::updateCurrentSong(status);
             }
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                float width = ImGui::GetContentRegionAvail().x;
+                if (ImGui::Button("Remove from queue", ImVec2(width, 0)))
+                {
+                    if (status.queue.size() == i)
+                        status.queue.pop_back();
+                    else
+                        status.queue.erase(status.queue.begin() + i);
+                }
+                if (ImGui::Button("Add to Playlist", ImVec2(width, 0)))
+                {
+                    // addToPlaylistPopup()
+                }
+                ImGui::EndPopup();
+            }
+
             if (status.queue[i] == status.current_song)
             {
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
@@ -87,10 +105,23 @@ void albumSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatu
                 std::vector<koji_player::SongEntry> album_songs = koji_library::getAlbumSongs(status.albums[i]);
                 koji_player::addSongsToQueue(status, album_songs);
             }
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                float width = ImGui::GetContentRegionAvail().x;
+                if (ImGui::Button("Append to queue", ImVec2(width, 0)))
+                {
+                    std::vector<koji_player::SongEntry> album_songs = koji_library::getAlbumSongs(status.albums[i]);
+                    koji_player::addSongsToQueue(status, album_songs);
+                }
+                ImGui::EndPopup();
+            }
+
             ImGui::TableNextColumn();
             ImGui::Text("%s", status.albums[i].title.c_str());
 
             ImGui::PopID();
+
         }
         ImGui::EndTable();
     }
@@ -123,6 +154,20 @@ void playlistSelectionTab(const koji_app::AppState &state, koji_player::PlayerSt
 
                 std::vector<koji_player::SongEntry> playlist_songs = koji_library::getPlaylistSongs(status.playlists[i]);
                 koji_player::addSongsToQueue(status, playlist_songs);
+            }
+            if (ImGui::BeginPopupContextItem())
+            {
+                float width = ImGui::GetContentRegionAvail().x;
+                if (ImGui::Button("Append to queue", ImVec2(width, 0)))
+                {
+                    std::vector<koji_player::SongEntry> playlist_songs = koji_library::getPlaylistSongs(status.playlists[i]);
+                    koji_player::addSongsToQueue(status, playlist_songs);
+                }
+                if (ImGui::Button("Edit Playlist", ImVec2(width, 0)))
+                {
+                    // editPlaylistPopup()
+                }
+                ImGui::EndPopup();
             }
             ImGui::PopID();
         }

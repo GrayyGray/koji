@@ -91,7 +91,7 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::TextUnformatted(repeat_mode);
 
     ImGui::Separator();
-    ImGui::Text("shift+click: add to queue   tab: cycle tabs   s: shuffle   r: repeat   space: play/pause   x: stop   q: quit");
+    ImGui::Text("s: shuffle   r: repeat   space: play/pause   x: stop   q: quit");
     ImGui::EndChild();
 }
 

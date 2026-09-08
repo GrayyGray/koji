@@ -115,7 +115,7 @@ void stopSong(PlayerStatus &status)
 {
     status.paused = true;
     updatePause(status);
-    mpv_set_property_string(status.mpv_context, "seek", "0");
+    mpv_command_string(status.mpv_context, "stop");
 }
 
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
@@ -127,10 +127,12 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
     }
 
     if (status.queue.empty())
+    {
         status.current_song = songs[0];
+        updateCurrentSong(status);
+    }
 
     status.queue.insert(status.queue.end(), songs.begin(), songs.end());
-    updateCurrentSong(status);
 }
 
 void cycleSong(PlayerStatus &status)

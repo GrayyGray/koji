@@ -68,6 +68,7 @@ bool pollEvents(const AppState &state)
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
+        SDL_ConvertEventToRenderCoordinates(state.renderer, &event);
         ImGui_ImplSDL3_ProcessEvent(&event);
         if (event.type == SDL_EVENT_QUIT)
             return false;
