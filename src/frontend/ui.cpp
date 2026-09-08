@@ -13,6 +13,9 @@ void beginMainWindow(const koji_app::AppState &state)
 {
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
+
+    state.io->DisplaySize = ImVec2(1280, 720);
+    
     ImGui::NewFrame();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(state.io->DisplaySize);
@@ -25,7 +28,9 @@ void endMainWindow(const koji_app::AppState &state)
     ImGui::PopStyleColor();
     ImGui::End();
     ImGui::Render();
-    SDL_SetRenderScale(state.renderer, state.io->DisplayFramebufferScale.x, state.io->DisplayFramebufferScale.y);
+
+    SDL_SetRenderLogicalPresentation(state.renderer, state.width, state.height, SDL_LOGICAL_PRESENTATION_STRETCH);
+
     SDL_RenderClear(state.renderer);
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), state.renderer);
     SDL_RenderPresent(state.renderer);
