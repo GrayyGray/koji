@@ -59,7 +59,6 @@ int main(int, char **)
 
         ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
         renderPlayer(status);
-        koji_player::runPlayer(status);
         ImGui::EndChild();
 
         endMainWindow(state);

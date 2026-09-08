@@ -221,17 +221,26 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
     updateCurrentSong(status);    
 }
 
-void runPlayer(PlayerStatus &status)
+bool pollEvents(PlayerStatus &status)
 {
     if (status.current_song == SongEntry{})
-        return;
+        return true;
 
     double time_remaining;
     mpv_get_property(status.mpv_context, "time-pos", MPV_FORMAT_DOUBLE, &time_remaining);
     status.position_seconds = static_cast<float>(time_remaining);
 
-    if (status.position_seconds == status.current_song.duration)
-        cycleSong(status);
+    mpv_event *event = mpv_wait_event(status.mpv_context, 0);
+
+    if (event->event_id == MPV_EVENT_END_FILE)
+    {
+        mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
+
+        if (end_file->reason == MPV_END_FILE_REASON_EOF)
+            cycleSong(status);
+    }
+
+    return true;
 }
 
 } // namespace koji_player

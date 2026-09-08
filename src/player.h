@@ -70,5 +70,5 @@ void updatePlayerPause(const PlayerStatus &status);
 void updatePlayerVolume(const PlayerStatus &status);
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
 void stopSong(PlayerStatus &status);
-void runPlayer(PlayerStatus &status);
+bool pollEvents(PlayerStatus &status);
 } // namespace koji_player

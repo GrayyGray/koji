@@ -146,6 +146,8 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
         koji_player::updatePlayerVolume(status);
     }
     
+    if (!koji_player::pollEvents(status))
+        return false;
     
     return true;
 }
@@ -203,21 +205,22 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::Text("%s %s", status.current_song == koji_player::SongEntry{} ? "⏹" : status.paused ? "⏸" : "⯈", status.current_song.title.empty() ? "nothing playing" : status.current_song.title.c_str());
     ImGui::SameLine();
 
-    
-    std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
     const char *shuffle_mode = status.shuffle ? "Shuf:On" : "Shuf:Off";
     const char *repeat_mode = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
 
-    float right_segment_width = 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x +ImGui::GetStyle().ItemSpacing.x * 3.0f;
+    std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
+    std::string position_time = status.current_song != koji_player::SongEntry{} ? koji_player::formatTime(status.position_seconds) : "--:--";
+    std::string duration_time = status.current_song != koji_player::SongEntry{} ? koji_player::formatTime(status.current_song.duration) : "--:--";
+
+    float       playing_progress = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
+    float right_segment_width = ImGui::CalcTextSize((position_time + " " + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x +ImGui::GetStyle().ItemSpacing.x * 3.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
 
-    float       playing_progress = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
-    std::string duration         = status.current_song != koji_player::SongEntry{} ? koji_player::formatTime(status.current_song.duration) : "--:--";
-    std::string overlay          = koji_player::formatTime(status.position_seconds) + "/" + duration;
-
+    ImGui::Text("%s %s", position_time.c_str(), duration_time.c_str());
+    ImGui::SameLine();
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f);
-    ImGui::ProgressBar(playing_progress, ImVec2(200, 20), overlay.c_str());
+    ImGui::ProgressBar(playing_progress, ImVec2(200, 20), "");
     ImGui::PopStyleVar();
     ImGui::SameLine();
 

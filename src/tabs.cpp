@@ -102,3 +102,8 @@ void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
         ImGui::EndTable();
     }
 }
+
+void playlistSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
+{
+
+}
