@@ -2,3 +2,4 @@
 out/
 koji
 compile_commands.json
+compile_commands.tmp
