@@ -183,7 +183,6 @@ bool initializePlayer(AppState &state, PlayerStatus &status)
     if (!status.mpv_context)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating mpv context", state.window);
-        cleanupApp(state);
         cleanupPlayer(status);
         return false;
     }
@@ -191,7 +190,6 @@ bool initializePlayer(AppState &state, PlayerStatus &status)
     if (mpv_initialize(status.mpv_context) != 0)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error initializing mpv", state.window);
-        cleanupApp(state);
         cleanupPlayer(status);
         return false;
     }
