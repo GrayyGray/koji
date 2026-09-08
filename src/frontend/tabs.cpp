@@ -1,22 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "tabs.h"
-#include <algorithm>
-#include <format>
 #include "imgui.h"
-#include "player.h"
+#include "../backend/library.h"
+#include "../backend/utils.h"
 
-ImVec4 darkenColor(const ImVec4 &color, float amount)
+namespace koji_ui
 {
-    float red   = std::max(0.0f, color.x - 0.2f);
-    float green = std::max(0.0f, color.y - 0.2f);
-    float blue  = std::max(0.0f, color.z - 0.2f);
-    return ImVec4(red, green, blue, color.w);
-}
-
-void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
+void songQueueTab(const koji_app::AppState &state, koji_player::PlayerStatus &status)
 {
-    const ImVec4 selected_background_color = darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
+    const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
     if (ImGui::BeginTable("songQueueTab", 4, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
@@ -55,7 +48,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
             ImGui::Text("%s", status.queue[i].album.album_title.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", koji_player::formatTime(status.queue[i].duration).c_str());
+            ImGui::Text("%s", koji_utils::formatTime(status.queue[i].duration).c_str());
 
             ImGui::PopID();
         }
@@ -64,7 +57,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
     }
 }
 
-void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
+void albumSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status)
 {
     if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
     {
@@ -91,7 +84,7 @@ void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
                     status.queue.clear();
                 }
 
-                std::vector<koji_player::SongEntry> album_songs = koji_player::getAlbumSongs(status.albums[i]);
+                std::vector<koji_player::SongEntry> album_songs = koji_library::getAlbumSongs(status.albums[i]);
                 koji_player::addSongsToQueue(status, album_songs);
             }
             ImGui::TableNextColumn();
@@ -103,7 +96,10 @@ void albumSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
     }
 }
 
-void playlistSelectionTab(const AppState &state, koji_player::PlayerStatus &status)
+void playlistSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status)
 {
 
 }
+} // namespace koji_ui
+
+

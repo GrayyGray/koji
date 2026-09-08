@@ -6,7 +6,7 @@ BACKEND_DIRECTORY = dependencies/imgui
 
 $(shell mkdir -p $(OUT_DIR))
 
-SOURCES = $(wildcard src/*.cpp)
+SOURCES = $(shell find src -name '*.cpp')
 SOURCES += $(BACKEND_DIRECTORY)/imgui.cpp $(BACKEND_DIRECTORY)/imgui_demo.cpp $(BACKEND_DIRECTORY)/imgui_draw.cpp $(BACKEND_DIRECTORY)/imgui_tables.cpp $(BACKEND_DIRECTORY)/imgui_widgets.cpp
 SOURCES += $(BACKEND_DIRECTORY)/backends/imgui_impl_sdl3.cpp $(BACKEND_DIRECTORY)/backends/imgui_impl_sdlrenderer3.cpp
 

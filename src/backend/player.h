@@ -9,7 +9,7 @@
 #include <vector>
 #include <mpv/client.h>
 
-struct AppState;
+#include "app.h"
 
 namespace koji_player
 {
@@ -55,7 +55,7 @@ struct PlayerStatus
     mpv_handle  *mpv_context = nullptr;
 };
 
-bool initialize(PlayerStatus &status);
+bool initialize(koji_app::AppState &state, PlayerStatus &status);
 bool pollEvents(PlayerStatus &status);
 void cleanup(PlayerStatus &status);
 
@@ -63,6 +63,10 @@ void updateCurrentSong(PlayerStatus &status);
 void updatePause(const PlayerStatus &status);
 void updateVolume(const PlayerStatus &status);
 void stopSong(PlayerStatus &status);
+
+void togglePause(koji_player::PlayerStatus &status);
+void toggleShuffle(koji_player::PlayerStatus &status);
+void toggleRepeatMode(koji_player::RepeatMode &repeat_mode);
 
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
 } // namespace koji_player

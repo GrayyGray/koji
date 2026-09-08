@@ -1,70 +1,76 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include <filesystem>
-#include <optional>
-#include <vector>
-#include "app.h"
+#include "backend/app.h"
+#include "backend/player.h"
+#include "frontend/tabs.h"
+#include "frontend/ui.h"
+#include "backend/library.h"
 #include "imgui.h"
-#include "player.h"
-#include "tabs.h"
 
 int main(int, char **)
 {
-    AppState state;
+    koji_app::AppState state;
     state.window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
     state.width        = 1280;
     state.height       = 720;
     state.title        = "koji";
 
-    if (!initializeApp(state))
+    if (!koji_app::initialize(state))
     {
         return 1;
     }
 
     koji_player::PlayerStatus status;
 
-    if (!koji_player::initializePlayer(state, status))
+    if (!koji_player::initialize(state, status))
     {
+        koji_app::cleanup(state);
         return 1;
     }
+
+    if (!koji_library::initialize(status))
+    {
+        koji_app::cleanup(state);
+        koji_player::cleanup(status);
+        return 1;
+    }
+        
 
     bool done = false;
     while (!done)
     {
-        if (!pollEvents(state, status))
+        if (!koji_app::pollEvents(state))
+            done = true;
+        if (!koji_player::pollEvents(status))
             done = true;
 
-        beginMainWindow(state);
+        koji_ui::beginMainWindow(state);
         ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
-        if (beginTab("Queue"))
+        if (koji_ui::beginTab("Queue"))
         {
             ImGui::Separator();
-            songQueueTab(state, status);
-            endTab();
+            koji_ui::songQueueTab(state, status);
+            koji_ui::endTab();
         }
-        if (beginTab("Albums"))
+        if (koji_ui::beginTab("Albums"))
         {
             ImGui::Separator();
-            albumSelectionTab(state, status);
-            endTab();
+            koji_ui::albumSelectionTab(state, status);
+            koji_ui::endTab();
         }
-        if (beginTab("Playlists"))
+        if (koji_ui::beginTab("Playlists"))
         {
             ImGui::Separator();
-            endTab();
+            koji_ui::endTab();
         }
         ImGui::EndTabBar();
 
-        ImGui::Separator();
+        koji_ui::renderPlayer(status);
 
-        ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-        renderPlayer(status);
-        ImGui::EndChild();
-
-        endMainWindow(state);
+        koji_ui::endMainWindow(state);
     }
 
-    cleanupApp(state);
-    cleanupPlayer(status);
+    koji_app::cleanup(state);
+    koji_player::cleanup(status);
     return 0;
 }
