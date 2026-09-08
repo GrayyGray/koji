@@ -135,6 +135,47 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
     return songs;
 }
 
+
+void playSong(PlayerStatus &status)
+{
+    status.paused = false;
+    updatePlayerPause(status);
+    const char *play_command[] = {"loadfile", status.current_song.path.c_str(), "replace", nullptr};
+    mpv_command(status.mpv_context, play_command);
+}
+
+void updatePlayerPause(const PlayerStatus &status)
+{
+    if (status.paused)
+        mpv_set_property_string(status.mpv_context, "pause", "yes");
+    else
+        mpv_set_property_string(status.mpv_context, "pause", "no");
+}
+
+void updatePlayerVolume(const PlayerStatus &status)
+{
+    mpv_set_property_string(status.mpv_context, "volume", std::to_string(status.volume).c_str());
+}
+
+void stopSong(PlayerStatus &status)
+{
+    status.paused = true;
+    updatePlayerPause(status);
+    mpv_set_property_string(status.mpv_context, "seek", "0");
+}
+
+void cycleSong(PlayerStatus &status)
+{
+    int current_song_index = indexSong(status.queue, status.current_song);
+
+    if (current_song_index + 1 > status.queue.size())
+        status.current_song = status.queue[0];
+    else
+        status.current_song = status.queue[current_song_index + 1];
+    
+    playSong(status);
+}
+
 bool initializePlayer(AppState &state, PlayerStatus &status)
 {
     status.mpv_context = mpv_create();
@@ -157,11 +198,13 @@ bool initializePlayer(AppState &state, PlayerStatus &status)
 
     mpv_set_option_string(status.mpv_context, "vo", "null");
     mpv_set_option_string(status.mpv_context, "audio-format", "s16le");
+    updatePlayerVolume(status);
 
     return true;
 }
 
 void cleanupPlayer(PlayerStatus &status) { mpv_destroy(status.mpv_context); }
+
 
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
 {
@@ -171,43 +214,11 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
         std::ranges::shuffle(songs, status.random_engine);
     }
 
+    if (status.queue.empty())
+        status.current_song = songs[0];
+
     status.queue.insert(status.queue.end(), songs.begin(), songs.end());
-
-    if (status.queue.size() == 0)
-        status.current_song = status.queue[0];
-}
-
-void playSong(PlayerStatus &status)
-{
-    status.paused = false;
-    mpv_set_property_string(status.mpv_context, "path", status.current_song.path.c_str());
-    mpv_set_property_string(status.mpv_context, "pause", "no");
-}
-void updatePlayerPause(PlayerStatus &status)
-{
-    if (status.paused)
-        mpv_set_property_string(status.mpv_context, "pause", "yes");
-    else
-        mpv_set_property_string(status.mpv_context, "pause", "no");
-}
-void stopSong(PlayerStatus &status)
-{
-    status.paused = true;
-    mpv_set_property_string(status.mpv_context, "pause", "yes");
-    mpv_set_property_string(status.mpv_context, "seek", "0");
-}
-
-void handleSongCycle(PlayerStatus &status)
-{
-    if (status.position_seconds == status.current_song.duration)
-    {
-        int current_song_index = indexSong(status.queue, status.current_song);
-
-        if (current_song_index + 1 > status.queue.size())
-            status.current_song = status.queue[0];
-        else
-            status.current_song = status.queue[current_song_index + 1];
-    }
+    playSong(status);    
 }
 
 void runPlayer(PlayerStatus &status)
@@ -216,15 +227,11 @@ void runPlayer(PlayerStatus &status)
         return;
 
     double time_remaining;
-    mpv_get_property(status.mpv_context, "time-remaining", MPV_FORMAT_DOUBLE, &time_remaining);
+    mpv_get_property(status.mpv_context, "time-pos", MPV_FORMAT_DOUBLE, &time_remaining);
     status.position_seconds = static_cast<float>(time_remaining);
 
-    handleSongCycle(status);
-
-    if (!status.paused)
-    {
-        playSong(status);
-    }
+    if (status.position_seconds == status.current_song.duration)
+        cycleSong(status);
 }
 
 } // namespace koji_player

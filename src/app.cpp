@@ -134,6 +134,19 @@ bool pollEvents(const AppState &state, koji_player::PlayerStatus &status)
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
         toggleRepeatMode(status.repeat_mode);
 
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Minus) && status.volume - 5 >= 0)
+    {
+        status.volume -= 5;
+        koji_player::updatePlayerVolume(status);
+    }
+
+    if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Equal) && status.volume + 5 <= 100)
+    {
+        status.volume += 5;
+        koji_player::updatePlayerVolume(status);
+    }
+    
+    
     return true;
 }
 
@@ -190,6 +203,15 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::Text("%s %s", status.current_song == koji_player::SongEntry{} ? "⏹" : status.paused ? "⏸" : "⯈", status.current_song.title.empty() ? "nothing playing" : status.current_song.title.c_str());
     ImGui::SameLine();
 
+    
+    std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
+    const char *shuffle_mode = status.shuffle ? "Shuf:On" : "Shuf:Off";
+    const char *repeat_mode = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+
+    float right_segment_width = 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x +ImGui::GetStyle().ItemSpacing.x * 3.0f;
+
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
+
     float       playing_progress = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
     std::string duration         = status.current_song != koji_player::SongEntry{} ? koji_player::formatTime(status.current_song.duration) : "--:--";
     std::string overlay          = koji_player::formatTime(status.position_seconds) + "/" + duration;
@@ -199,13 +221,13 @@ void renderPlayer(const koji_player::PlayerStatus &status)
     ImGui::PopStyleVar();
     ImGui::SameLine();
 
-    ImGui::Text("Vol:%d%%", status.volume);
+    ImGui::TextUnformatted(volume_percentage.c_str());
     ImGui::SameLine();
 
-    ImGui::TextUnformatted(status.shuffle ? "Shuf:On" : "Shuf:Off");
+    ImGui::TextUnformatted(shuffle_mode);
     ImGui::SameLine();
 
-    const char *repeat_mode = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+    
     ImGui::TextUnformatted(repeat_mode);
 
     ImGui::Separator();

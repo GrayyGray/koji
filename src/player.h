@@ -66,7 +66,8 @@ struct PlayerStatus
 bool initializePlayer(AppState &state, PlayerStatus &status);
 void cleanupPlayer(PlayerStatus &status);
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
-void updatePlayerPause(PlayerStatus &status);
+void updatePlayerPause(const PlayerStatus &status);
+void updatePlayerVolume(const PlayerStatus &status);
 void stopSong(PlayerStatus &status);
 void runPlayer(PlayerStatus &status);
 } // namespace koji_player
