@@ -136,7 +136,7 @@ std::vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 }
 
 
-void playSong(PlayerStatus &status)
+void updateCurrentSong(PlayerStatus &status)
 {
     status.paused = false;
     updatePlayerPause(status);
@@ -173,7 +173,7 @@ void cycleSong(PlayerStatus &status)
     else
         status.current_song = status.queue[current_song_index + 1];
     
-    playSong(status);
+    updateCurrentSong(status);
 }
 
 bool initializePlayer(AppState &state, PlayerStatus &status)
@@ -218,7 +218,7 @@ void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
         status.current_song = songs[0];
 
     status.queue.insert(status.queue.end(), songs.begin(), songs.end());
-    playSong(status);    
+    updateCurrentSong(status);    
 }
 
 void runPlayer(PlayerStatus &status)

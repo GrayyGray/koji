@@ -41,6 +41,7 @@ void songQueueTab(const AppState &state, koji_player::PlayerStatus &status)
             {
                 status.paused       = false;
                 status.current_song = status.queue[i];
+                koji_player::updateCurrentSong(status);
             }
             if (status.queue[i] == status.current_song)
             {
