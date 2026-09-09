@@ -1,3 +1,11 @@
+---
+name: Feature Request
+about: Suggest an idea or improvement for this project
+title: "[Feature]: "
+labels: enhancement
+assignees: ""
+---
+
 <!--- Provide a general summary of the issue in the Title above -->
 
 ## Detailed Description
