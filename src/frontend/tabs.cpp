@@ -4,7 +4,6 @@
 #include "../backend/library.h"
 #include "../backend/utils.h"
 #include "imgui.h"
-#include "variant"
 
 using namespace std;
 using namespace koji_app;
@@ -13,8 +12,6 @@ using namespace koji_library;
 
 namespace koji_ui
 {
-
-typedef variant<vector<SongEntry>, vector<AlbumEntry>, vector<PlaylistEntry>> ItemEntry;
 
 void processCollectionEntry(AppState &state, PlayerStatus &status, string id, const int index)
 {
@@ -41,11 +38,11 @@ void appendToQueueButton(AppState &state, PlayerStatus &status, string id, int i
         processCollectionEntry(state, status, id, index);
 }
 
-void editPlaylistButton(float width)
+void editPlaylistButton(AppState &state, float width)
 {
     if (ImGui::Button("Edit Playlist", ImVec2(width, 0)))
     {
-        // editPlaylistPopup()
+        state.edit_playlist_window = true;
     }
 }
 
@@ -81,8 +78,8 @@ void handleTableRow(AppState &state, PlayerStatus &status, string id, const vect
         else
             appendToQueueButton(state, status, id, index, width);
 
-        // if (id == "playlist")
-        // editPlaylistButton(width);
+        if (id == "playlist")
+            editPlaylistButton(state, width);
         ImGui::EndPopup();
     }
 
@@ -100,7 +97,6 @@ void handleTableRow(AppState &state, PlayerStatus &status, string id, const vect
 
 void tab(AppState &state, PlayerStatus &status, string id)
 {
-    ItemEntry      entry;
     vector<string> headers;
     vector<string> texts;
 

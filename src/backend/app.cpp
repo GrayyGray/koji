@@ -63,7 +63,7 @@ bool initialize(AppState &state)
     ImGui_ImplSDLRenderer3_Init(state.renderer);
 
     
-    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 18.0f * 2);
+    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 36.0f);
     
 
     SDL_ShowWindow(state.window);
