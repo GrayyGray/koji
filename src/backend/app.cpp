@@ -8,6 +8,11 @@
 #include "imgui_impl_sdlrenderer3.h"
 #include "player.h"
 
+// NOLINTBEGIN(readability-identifier-naming)
+extern const unsigned char _binary_src_assets_GoNotoCurrent_Regular_ttf_start[];
+extern const unsigned char _binary_src_assets_GoNotoCurrent_Regular_ttf_end[];
+// NOLINTEND(readability-identifier-naming)
+
 namespace koji_app
 {
 bool initialize(AppState &state)
@@ -57,7 +62,9 @@ bool initialize(AppState &state)
     ImGui_ImplSDL3_InitForSDLRenderer(state.window, state.renderer);
     ImGui_ImplSDLRenderer3_Init(state.renderer);
 
-    state.io->Fonts->AddFontFromFileTTF("assets/GoNotoCurrent-Regular.ttf", 18.0f);
+    
+    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 18.0f);
+    
 
     SDL_ShowWindow(state.window);
     return true;
