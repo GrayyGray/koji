@@ -14,7 +14,7 @@ void beginMainWindow(const koji_app::AppState &state)
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
 
-    state.io->DisplaySize = ImVec2(1280, 720);
+    state.io->DisplaySize = ImVec2(state.width * 2, state.height *2);
 
     ImGui::NewFrame();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -29,7 +29,7 @@ void endMainWindow(const koji_app::AppState &state)
     ImGui::End();
     ImGui::Render();
 
-    SDL_SetRenderLogicalPresentation(state.renderer, state.width, state.height, SDL_LOGICAL_PRESENTATION_STRETCH);
+    SDL_SetRenderLogicalPresentation(state.renderer, state.width * 2, state.height * 2, SDL_LOGICAL_PRESENTATION_STRETCH);
 
     SDL_RenderClear(state.renderer);
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), state.renderer);
@@ -42,7 +42,7 @@ bool beginTab(const char *label)
         return false;
 
     ImGui::Spacing();
-    ImGui::BeginChild("mainBrowser", ImVec2(0, -65), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
+    ImGui::BeginChild("mainBrowser", ImVec2(0, -100), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     ImGui::Separator();
 

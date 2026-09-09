@@ -16,7 +16,6 @@ struct AppState
     SDL_WindowFlags window_flags;
     int             width, height;
     float           display_content_scale;
-    int             scaledWidth, scaledHeight;
 };
 
 bool initialize(AppState &state);
