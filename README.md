@@ -39,8 +39,6 @@ Songs can be added to the queue by selecting albums and playlists in the respect
 Shift clicking appends. 
 Regular clicking replaces.
 
-
-
 ## Installation
 
 ```git clone https://github.com/GrayyGray/koji.git && make all && ./koji```
@@ -90,3 +88,12 @@ Example:
 ```
 Blitzkrieg Bop - 2016 Remaster.mp3
 ```
+
+## Screenshots
+
+![queue-tab](docs/screenshots/queue.png)
+![albums-tab](docs/screenshots/albums.png)
+![playlists-tab](docs/screenshots/playlists.png)
+
+
+**[DISCLAIMER](docs/DISCLAIMER.md)**
