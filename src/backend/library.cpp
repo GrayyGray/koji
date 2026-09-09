@@ -154,7 +154,7 @@ std::vector<koji_player::SongEntry> getPlaylistSongs(const koji_player::Playlist
         std::cout << "xdg config directory locate failed" << std::endl;
         return songs;
     }
-    
+
     std::filesystem::path songs_directory = *xdg_config_directory / "koji" / "playlists" / "songs";
 
     std::string song_title;

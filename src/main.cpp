@@ -48,19 +48,19 @@ int main(int, char **)
         if (koji_ui::beginTab("Queue"))
         {
             ImGui::Separator();
-            koji_ui::songQueueTab(state, status);
+            koji_ui::tab(state, status, "queue");
             koji_ui::endTab();
         }
         if (koji_ui::beginTab("Albums"))
         {
             ImGui::Separator();
-            koji_ui::albumSelectionTab(state, status);
+            koji_ui::tab(state, status, "album");
             koji_ui::endTab();
         }
         if (koji_ui::beginTab("Playlists"))
         {
             ImGui::Separator();
-            koji_ui::playlistSelectionTab(state, status);
+            koji_ui::tab(state, status, "playlist");
             koji_ui::endTab();
         }
         ImGui::EndTabBar();

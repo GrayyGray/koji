@@ -6,7 +6,5 @@
 #include "../backend/player.h"
 namespace koji_ui
 {
-void songQueueTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
-void albumSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
-void playlistSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status);
+void tab(koji_app::AppState &state, koji_player::PlayerStatus &status, std::string id);
 } // namespace koji_ui

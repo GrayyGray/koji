@@ -4,174 +4,177 @@
 #include "../backend/library.h"
 #include "../backend/utils.h"
 #include "imgui.h"
+#include "variant"
+
+using namespace std;
+using namespace koji_app;
+using namespace koji_player;
+using namespace koji_library;
 
 namespace koji_ui
 {
-void songQueueTab(const koji_app::AppState &state, koji_player::PlayerStatus &status)
+
+typedef variant<vector<SongEntry>, vector<AlbumEntry>, vector<PlaylistEntry>> ItemEntry;
+
+
+
+void processCollectionEntry(AppState &state, PlayerStatus &status,  string id, const int index)
+{
+
+
+    vector<SongEntry> songs;
+    if (id == "album")
+        songs = getAlbumSongs(status.albums[index]);
+    else
+        songs = getPlaylistSongs(status.playlists[index]);
+    
+    addSongsToQueue(status, songs);
+}
+
+void selectSong(PlayerStatus &status, int index)
+{
+
+}
+
+void appendToQueueButton(AppState &state, PlayerStatus &status, string id, int index, float width)
+{
+    if (ImGui::Button("Append to queue", ImVec2(width, 0)))    
+        processCollectionEntry(state, status, id, index);
+}
+
+
+void removeFromQueueButton(PlayerStatus &status, int index, float width)
+{
+    if (ImGui::Button("Remove from queue", ImVec2(width, 0)))
+    {
+        status.queue.erase(status.queue.begin() + index);
+    }
+}
+
+void editPlaylistButton(float width)
+{
+    if (ImGui::Button("Edit Playlist", ImVec2(width, 0)))
+    {
+        // editPlaylistPopup()
+    }
+}
+
+void handleTableRow(AppState &state, PlayerStatus &status, string id, const vector<string>  &headers, const int index, const vector<string>  texts)
 {
     const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
-    if (ImGui::BeginTable("songQueueTab", 4, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
+    ImGui::PushID(index);
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn();
+
+    if (ImGui::Selectable(texts[0].c_str(), false, ImGuiSelectableFlags_SpanAllColumns))\
     {
-        ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
-        ImGui::TableSetupColumn("Artist");
-        ImGui::TableSetupColumn("Title");
-        ImGui::TableSetupColumn("Album");
-        ImGui::TableSetupColumn("Duration");
-
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
-        ImGui::TableHeadersRow();
-        ImGui::PopStyleColor();
-        ImGui::PopItemFlag();
-
-        for (int i = 0; i < status.queue.size(); i++)
+        if (id == "queue") 
         {
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-
-            if (ImGui::Selectable(status.queue[i].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-            {
-                status.paused       = false;
-                status.current_song = status.queue[i];
-                koji_player::updateCurrentSong(status);
-            }
-
-            if (ImGui::BeginPopupContextItem())
-            {
-                float width = ImGui::GetContentRegionAvail().x;
-                if (ImGui::Button("Remove from queue", ImVec2(width, 0)))
-                {
-                    if (status.queue.size() == i)
-                        status.queue.pop_back();
-                    else
-                        status.queue.erase(status.queue.begin() + i);
-                }
-                if (ImGui::Button("Add to Playlist", ImVec2(width, 0)))
-                {
-                    // addToPlaylistPopup()
-                }
-                ImGui::EndPopup();
-            }
-
-            if (status.queue[i] == status.current_song)
-            {
-                ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-            }
-
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", status.queue[i].title.c_str());
-
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", status.queue[i].album.c_str());
-
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", koji_utils::formatTime(status.queue[i].duration).c_str());
-
-            ImGui::PopID();
+            status.current_song = status.queue[index];
+            updateCurrentSong(status);
         }
-
-        ImGui::EndTable();
+        else
+        {
+            if (!state.io->KeyShift && !status.queue.empty())
+                status.queue.clear();
+            processCollectionEntry(state, status, id, index); 
+        }
+            
     }
+    
+    if (ImGui::BeginPopupContextItem())
+    {
+        float width = ImGui::GetContentRegionAvail().x;
+
+        if (id == "queue") 
+            removeFromQueueButton(status, index, width);
+        else 
+            appendToQueueButton(state, status, id, index, width);   
+        
+        if (id == "playlist")
+            editPlaylistButton(width);
+        ImGui::EndPopup();
+    }
+    
+    
+
+    if (id == "queue" && status.queue[index] == status.current_song)
+        ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
+
+    for (int i = 1; i < headers.size(); i++)
+    {
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", texts[i].c_str());
+    }
+        
+
+
+    ImGui::PopID();
 }
 
-void albumSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status)
+void tab(AppState &state, PlayerStatus &status, string id)
 {
-    if (ImGui::BeginTable("albumSelectionTab", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
+    ItemEntry entry;
+    vector<string> headers;
+    vector<string> texts;
+
+    if (id == "queue")
+        headers = {"Artist", "Title", "Album", "Duration"};
+    else if (id == "album")
+        headers = {"Artist", "Album"};
+    else if (id == "playlist")
+        headers = {"Playlist"};
+
+
+    ImGui::BeginTable(id.c_str(), static_cast<int>(headers.size()), ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
+
+    ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
+    for (const string &header : headers)
     {
-        ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
-        ImGui::TableSetupColumn("Artist");
-        ImGui::TableSetupColumn("Album");
-
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
-        ImGui::TableHeadersRow();
-        ImGui::PopStyleColor();
-        ImGui::PopItemFlag();
-
-        for (int i = 0; i < status.albums.size(); i++)
-        {
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-
-            ImGui::TableNextColumn();
-            if (ImGui::Selectable(status.albums[i].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-            {
-                if (!state.io->KeyShift && (status.queue.size() > 0))
-                {
-                    status.paused = false;
-                    status.queue.clear();
-                }
-
-                std::vector<koji_player::SongEntry> album_songs = koji_library::getAlbumSongs(status.albums[i]);
-                koji_player::addSongsToQueue(status, album_songs);
-            }
-
-            if (ImGui::BeginPopupContextItem())
-            {
-                float width = ImGui::GetContentRegionAvail().x;
-                if (ImGui::Button("Append to queue", ImVec2(width, 0)))
-                {
-                    std::vector<koji_player::SongEntry> album_songs = koji_library::getAlbumSongs(status.albums[i]);
-                    koji_player::addSongsToQueue(status, album_songs);
-                }
-                ImGui::EndPopup();
-            }
-
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", status.albums[i].title.c_str());
-
-            ImGui::PopID();
-
-        }
-        ImGui::EndTable();
+        ImGui::TableSetupColumn(header.c_str());
     }
-}
 
-void playlistSelectionTab(const koji_app::AppState &state, koji_player::PlayerStatus &status) 
-{
-    if (ImGui::BeginTable("playlistSelectionTab", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
+    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
+    ImGui::TableHeadersRow();
+    ImGui::PopStyleColor();
+    ImGui::PopItemFlag();
+
+    if (id == "queue")
     {
-        ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
-        ImGui::TableSetupColumn("Playlist");
-
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
-        ImGui::TableHeadersRow();
-        ImGui::PopStyleColor();
-        ImGui::PopItemFlag();
-
-        for (int i = 0; i < status.playlists.size(); i++)
+        for (int index = 0; index < status.queue.size(); index++)
         {
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            if (ImGui::Selectable(status.playlists[i].title.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-            {
-                if (!state.io->KeyShift && (status.queue.size() > 0))
-                {
-                    status.paused = false;
-                    status.queue.clear();
-                }
-
-                std::vector<koji_player::SongEntry> playlist_songs = koji_library::getPlaylistSongs(status.playlists[i]);
-                koji_player::addSongsToQueue(status, playlist_songs);
-            }
-            if (ImGui::BeginPopupContextItem())
-            {
-                float width = ImGui::GetContentRegionAvail().x;
-                if (ImGui::Button("Append to queue", ImVec2(width, 0)))
-                {
-                    std::vector<koji_player::SongEntry> playlist_songs = koji_library::getPlaylistSongs(status.playlists[i]);
-                    koji_player::addSongsToQueue(status, playlist_songs);
-                }
-                if (ImGui::Button("Edit Playlist", ImVec2(width, 0)))
-                {
-                    // editPlaylistPopup()
-                }
-                ImGui::EndPopup();
-            }
-            ImGui::PopID();
+            texts.clear();
+            texts.push_back(status.queue[index].artist);
+            texts.push_back(status.queue[index].title);
+            texts.push_back(status.queue[index].album);
+            texts.push_back(koji_utils::formatTime(status.queue[index].duration));
+            handleTableRow(state, status, id, headers, index, texts);
         }
-        ImGui::EndTable();
+            
     }
+    else if (id == "album")
+    {
+        for (int index = 0; index < status.albums.size(); index++)
+        {
+            texts.clear();
+            texts.push_back(status.albums[index].artist);
+            texts.push_back(status.albums[index].title);
+            handleTableRow(state, status, id, headers, index, texts);
+        }
+            
+    }
+    else if (id == "playlist")
+    {
+        for (int index = 0; index < status.playlists.size(); index++)
+        {
+            texts.clear();
+            texts.push_back(status.playlists[index].title);
+            handleTableRow(state, status, id, headers, index, texts);
+        }
+            
+    }
+    
+    ImGui::EndTable();
 }
 } // namespace koji_ui
