@@ -16,32 +16,16 @@ namespace koji_ui
 
 typedef variant<vector<SongEntry>, vector<AlbumEntry>, vector<PlaylistEntry>> ItemEntry;
 
-
-
-void processCollectionEntry(AppState &state, PlayerStatus &status,  string id, const int index)
+void processCollectionEntry(AppState &state, PlayerStatus &status, string id, const int index)
 {
-
-
     vector<SongEntry> songs;
     if (id == "album")
         songs = getAlbumSongs(status.albums[index]);
     else
         songs = getPlaylistSongs(status.playlists[index]);
-    
+
     addSongsToQueue(status, songs);
 }
-
-void selectSong(PlayerStatus &status, int index)
-{
-
-}
-
-void appendToQueueButton(AppState &state, PlayerStatus &status, string id, int index, float width)
-{
-    if (ImGui::Button("Append to queue", ImVec2(width, 0)))    
-        processCollectionEntry(state, status, id, index);
-}
-
 
 void removeFromQueueButton(PlayerStatus &status, int index, float width)
 {
@@ -49,6 +33,12 @@ void removeFromQueueButton(PlayerStatus &status, int index, float width)
     {
         status.queue.erase(status.queue.begin() + index);
     }
+}
+
+void appendToQueueButton(AppState &state, PlayerStatus &status, string id, int index, float width)
+{
+    if (ImGui::Button("Append to queue", ImVec2(width, 0)))
+        processCollectionEntry(state, status, id, index);
 }
 
 void editPlaylistButton(float width)
@@ -59,7 +49,7 @@ void editPlaylistButton(float width)
     }
 }
 
-void handleTableRow(AppState &state, PlayerStatus &status, string id, const vector<string>  &headers, const int index, const vector<string>  texts)
+void handleTableRow(AppState &state, PlayerStatus &status, string id, const vector<string> &headers, const int index, const vector<string> texts)
 {
     const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
@@ -67,9 +57,9 @@ void handleTableRow(AppState &state, PlayerStatus &status, string id, const vect
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
 
-    if (ImGui::Selectable(texts[0].c_str(), false, ImGuiSelectableFlags_SpanAllColumns))\
+    if (ImGui::Selectable(texts[0].c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
     {
-        if (id == "queue") 
+        if (id == "queue")
         {
             status.current_song = status.queue[index];
             updateCurrentSong(status);
@@ -78,28 +68,25 @@ void handleTableRow(AppState &state, PlayerStatus &status, string id, const vect
         {
             if (!state.io->KeyShift && !status.queue.empty())
                 status.queue.clear();
-            processCollectionEntry(state, status, id, index); 
+            processCollectionEntry(state, status, id, index);
         }
-            
     }
-    
+
     if (ImGui::BeginPopupContextItem())
     {
         float width = ImGui::GetContentRegionAvail().x;
 
-        if (id == "queue") 
+        if (id == "queue")
             removeFromQueueButton(status, index, width);
-        else 
-            appendToQueueButton(state, status, id, index, width);   
-        
-        if (id == "playlist")
-            editPlaylistButton(width);
+        else
+            appendToQueueButton(state, status, id, index, width);
+
+        // if (id == "playlist")
+        // editPlaylistButton(width);
         ImGui::EndPopup();
     }
-    
-    
 
-    if (id == "queue" && status.queue[index] == status.current_song)
+    if (id == "queue" && index < status.queue.size() && status.queue[index] == status.current_song)
         ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
 
     for (int i = 1; i < headers.size(); i++)
@@ -107,15 +94,13 @@ void handleTableRow(AppState &state, PlayerStatus &status, string id, const vect
         ImGui::TableNextColumn();
         ImGui::Text("%s", texts[i].c_str());
     }
-        
-
 
     ImGui::PopID();
 }
 
 void tab(AppState &state, PlayerStatus &status, string id)
 {
-    ItemEntry entry;
+    ItemEntry      entry;
     vector<string> headers;
     vector<string> texts;
 
@@ -125,7 +110,6 @@ void tab(AppState &state, PlayerStatus &status, string id)
         headers = {"Artist", "Album"};
     else if (id == "playlist")
         headers = {"Playlist"};
-
 
     ImGui::BeginTable(id.c_str(), static_cast<int>(headers.size()), ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 
@@ -151,7 +135,6 @@ void tab(AppState &state, PlayerStatus &status, string id)
             texts.push_back(koji_utils::formatTime(status.queue[index].duration));
             handleTableRow(state, status, id, headers, index, texts);
         }
-            
     }
     else if (id == "album")
     {
@@ -162,7 +145,6 @@ void tab(AppState &state, PlayerStatus &status, string id)
             texts.push_back(status.albums[index].title);
             handleTableRow(state, status, id, headers, index, texts);
         }
-            
     }
     else if (id == "playlist")
     {
@@ -172,9 +154,8 @@ void tab(AppState &state, PlayerStatus &status, string id)
             texts.push_back(status.playlists[index].title);
             handleTableRow(state, status, id, headers, index, texts);
         }
-            
     }
-    
+
     ImGui::EndTable();
 }
 } // namespace koji_ui

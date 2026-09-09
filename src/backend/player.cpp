@@ -139,7 +139,7 @@ void cycleSong(PlayerStatus &status)
 {
     int current_song_index = indexSong(status.queue, status.current_song);
 
-    if (current_song_index + 1 > status.queue.size())
+    if (current_song_index + 1 >= status.queue.size())
         status.current_song = status.queue[0];
     else
         status.current_song = status.queue[current_song_index + 1];

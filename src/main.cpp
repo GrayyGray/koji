@@ -47,19 +47,16 @@ int main(int, char **)
         ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
         if (koji_ui::beginTab("Queue"))
         {
-            ImGui::Separator();
             koji_ui::tab(state, status, "queue");
             koji_ui::endTab();
         }
         if (koji_ui::beginTab("Albums"))
         {
-            ImGui::Separator();
             koji_ui::tab(state, status, "album");
             koji_ui::endTab();
         }
         if (koji_ui::beginTab("Playlists"))
         {
-            ImGui::Separator();
             koji_ui::tab(state, status, "playlist");
             koji_ui::endTab();
         }

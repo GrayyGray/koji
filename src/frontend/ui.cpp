@@ -44,6 +44,7 @@ bool beginTab(const char *label)
     ImGui::Spacing();
     ImGui::BeginChild("mainBrowser", ImVec2(0, -65), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
+    ImGui::Separator();
 
     return true;
 }
