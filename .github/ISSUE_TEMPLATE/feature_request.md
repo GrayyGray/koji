@@ -3,7 +3,7 @@ name: Feature Request
 about: Suggest an idea or improvement for this project
 title: "[Feature]: "
 labels: enhancement
-assignees: ""
+assignees: "GrayGray"
 ---
 
 <!--- Provide a general summary of the issue in the Title above -->
@@ -22,6 +22,5 @@ assignees: ""
 <!--- Include as many relevant details about the environment you experienced the bug in -->
 * Version used:
 * Environment name and version (e.g. Python 3.12, Ruby 3.3):
-* Server type and version:
 * Operating System and version:
 * Link to your project or a reproduction:
