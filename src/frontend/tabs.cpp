@@ -42,7 +42,7 @@ void editPlaylistButton(AppState &state, float width)
 {
     if (ImGui::Button("Edit Playlist", ImVec2(width, 0)))
     {
-        state.edit_playlist_window = true;
+        // state.edit_playlist_window = true;
     }
 }
 
