@@ -4,57 +4,61 @@
 #include <fstream>
 #include <iostream>
 #include <optional>
+#include <tuple>
 #include <taglib/fileref.h>
+
+using namespace std;
+using namespace koji_player;
 
 namespace koji_library
 {
-std::optional<std::filesystem::path> xdgConfigDir()
+optional<filesystem::path> xdgConfigDir()
 {
     const char *xdg_config = getenv("XDG_CONFIG_HOME");
     if (xdg_config && xdg_config[0] != '\0')
     {
-        return std::filesystem::path(xdg_config);
+        return filesystem::path(xdg_config);
     }
 
     // fallback per spec: $HOME/.config
     const char *home = getenv("HOME");
     if (home)
     {
-        return std::filesystem::path(home) / ".config";
+        return filesystem::path(home) / ".config";
     }
 
-    return std::nullopt;
+    return nullopt;
 }
 
-std::vector<koji_player::AlbumEntry> getAlbums()
+vector<AlbumEntry> getAlbums()
 {
-    std::vector<koji_player::AlbumEntry> albums;
+    vector<AlbumEntry> albums;
 
-    std::optional<std::filesystem::path> xdg_config_directory = xdgConfigDir();
+    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
     if (!xdg_config_directory)
     {
-        std::cout << "xdg config directory locate failed" << std::endl;
+        cout << "xdg config directory locate failed" << endl;
         return albums;
     }
 
-    std::filesystem::path album_directory = *xdg_config_directory / "koji" / "albums";
-    for (const auto &album : std::filesystem::recursive_directory_iterator(album_directory))
+    filesystem::path album_directory = *xdg_config_directory / "koji" / "albums";
+    for (const auto &album : filesystem::recursive_directory_iterator(album_directory))
     {
-        if (!std::filesystem::is_directory(album))
+        if (!filesystem::is_directory(album))
         {
             continue;
         }
 
-        std::string            relative_album_path_string = std::filesystem::relative(album.path(), album_directory).string();
-        std::string::size_type slash_positon              = relative_album_path_string.find('/');
+        string            relative_album_path_string = filesystem::relative(album.path(), album_directory).string();
+        string::size_type slash_positon              = relative_album_path_string.find('/');
 
-        if (slash_positon == std::string::npos)
+        if (slash_positon == string::npos)
             continue;
 
-        std::string artist      = relative_album_path_string.substr(0, slash_positon);
-        std::string album_title = relative_album_path_string.substr(slash_positon + 1);
+        string artist      = relative_album_path_string.substr(0, slash_positon);
+        string album_title = relative_album_path_string.substr(slash_positon + 1);
 
-        koji_player::AlbumEntry entry = {album.path(), album_title, artist};
+        AlbumEntry entry = {album.path(), album_title, artist};
         if (find(albums.begin(), albums.end(), entry) == albums.end())
         {
             albums.push_back(entry);
@@ -64,30 +68,30 @@ std::vector<koji_player::AlbumEntry> getAlbums()
     return albums;
 }
 
-std::vector<koji_player::PlaylistEntry> getPlaylists()
+vector<PlaylistEntry> getPlaylists()
 {
-    std::vector<koji_player::PlaylistEntry> playlists;
+    vector<PlaylistEntry> playlists;
 
-    std::optional<std::filesystem::path> xdg_config_directory = xdgConfigDir();
+    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
     if (!xdg_config_directory)
     {
-        std::cout << "xdg config directory locate failed" << std::endl;
+        cout << "xdg config directory locate failed" << endl;
         return playlists;
     }
-    std::filesystem::path playlists_directory = *xdg_config_directory / "koji" / "playlists";
+    filesystem::path playlists_directory = *xdg_config_directory / "koji" / "playlists";
 
-    for (const auto &playlist : std::filesystem::directory_iterator(playlists_directory))
+    for (const auto &playlist : filesystem::directory_iterator(playlists_directory))
     {
-        if (std::filesystem::is_directory(playlist))
+        if (filesystem::is_directory(playlist))
         {
             continue;
         }
 
-        std::string            relative_album_path_string = std::filesystem::relative(playlist.path(), playlists_directory).string();
-        std::string::size_type dot_positon                = relative_album_path_string.find('.');
-        std::string            playlist_title             = relative_album_path_string.substr(0, dot_positon);
+        string            relative_album_path_string = filesystem::relative(playlist.path(), playlists_directory).string();
+        string::size_type dot_positon                = relative_album_path_string.find('.');
+        string            playlist_title             = relative_album_path_string.substr(0, dot_positon);
 
-        koji_player::PlaylistEntry entry = {playlist.path(), playlist_title};
+        PlaylistEntry entry = {playlist.path(), playlist_title};
         if (find(playlists.begin(), playlists.end(), entry) == playlists.end())
         {
             playlists.push_back(entry);
@@ -97,33 +101,27 @@ std::vector<koji_player::PlaylistEntry> getPlaylists()
     return playlists;
 }
 
-std::vector<koji_player::SongEntry> getAlbumSongs(const koji_player::AlbumEntry &album)
+vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 {
-    std::vector<koji_player::SongEntry> songs;
-
-    for (const auto &song : std::filesystem::recursive_directory_iterator(album.path.c_str()))
+    vector<tuple<int, SongEntry>> tracks;
+    for (const auto &song : filesystem::recursive_directory_iterator(album.path.c_str()))
     {
-        if (std::filesystem::is_directory(song))
+        if (filesystem::is_directory(song))
         {
             continue;
         }
-        std::string relative_song_path_string = std::filesystem::relative(song.path(), album.path).string();
-
-        std::string::size_type track_separator     = relative_song_path_string.find(" - ");
-        std::string::size_type extension_separator = relative_song_path_string.rfind('.');
-
-        if (track_separator == std::string::npos)
-            continue;
-        if (extension_separator == std::string::npos)
-            continue;
-
-        std::string song_title = relative_song_path_string.substr(track_separator + 3, extension_separator - (track_separator + 3));
 
         TagLib::FileRef song_file(song.path().c_str());
 
-        std::string artist;
+        int track_index;
+        string artist;
+        string title;
         if (!song_file.isNull() && song_file.tag())
+        {
+            track_index = song_file.tag()->track();
+            title = song_file.tag()->title().to8Bit(true);
             artist = song_file.tag()->artist().to8Bit(true);
+        }
         else
             continue;
 
@@ -133,44 +131,55 @@ std::vector<koji_player::SongEntry> getAlbumSongs(const koji_player::AlbumEntry 
         else
             continue;
 
-        koji_player::SongEntry entry = {song.path(), artist, album.title, song_title, duration};
-        songs.push_back(entry);
+        SongEntry entry = {song.path(), artist, album.title, title, duration};
+        tracks.push_back({track_index, entry});
     }
+
+    std::sort(tracks.begin(), tracks.end(), [](const tuple<int, SongEntry> &entry_a, const tuple<int, SongEntry> &entry_b) { return get<0>(entry_a) < get<0>(entry_b); });
+
+    vector<SongEntry> songs;
+    songs.reserve(tracks.size());
+    
+    for (const tuple<int, SongEntry> &track : tracks)
+        songs.push_back(get<1>(track));
+
     return songs;
 }
 
-std::vector<koji_player::SongEntry> getPlaylistSongs(const koji_player::PlaylistEntry &playlist)
+vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 {
-    std::vector<koji_player::SongEntry> songs;
+    vector<SongEntry> songs;
 
-    std::ifstream playlist_file(playlist.path);
+    ifstream playlist_file(playlist.path);
 
     if (!playlist_file)
         return songs;
 
-    std::optional<std::filesystem::path> xdg_config_directory = xdgConfigDir();
+    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
     if (!xdg_config_directory)
     {
-        std::cout << "xdg config directory locate failed" << std::endl;
+        cout << "xdg config directory locate failed" << endl;
         return songs;
     }
 
-    std::filesystem::path songs_directory = *xdg_config_directory / "koji" / "playlists" / "songs";
+    filesystem::path songs_directory = *xdg_config_directory / "koji" / "playlists" / "songs";
 
-    std::string song_title;
+    string playlist_song;
 
-    while (std::getline(playlist_file, song_title))
+    while (getline(playlist_file, playlist_song))
     {
-        std::filesystem::path song_path = songs_directory / song_title;
+        filesystem::path song_path = songs_directory / playlist_song;
 
         TagLib::FileRef song_file(song_path.c_str());
 
-        std::string artist;
-        std::string album;
+        string title;
+        string album;
+        string artist;
         if (!song_file.isNull() && song_file.tag())
         {
-            artist = song_file.tag()->artist().to8Bit(true);
+            title = song_file.tag()->title().to8Bit(true);
             album  = song_file.tag()->album().to8Bit(true);
+            artist = song_file.tag()->artist().to8Bit(true);
         }
         else
             continue;
@@ -181,13 +190,13 @@ std::vector<koji_player::SongEntry> getPlaylistSongs(const koji_player::Playlist
         else
             continue;
 
-        koji_player::SongEntry entry = {song_path, artist, album, song_title, duration};
+        SongEntry entry = {song_path, artist, album, title, duration};
         songs.push_back(entry);
     }
     return songs;
 }
 
-bool initialize(koji_player::PlayerStatus &status)
+bool initialize(PlayerStatus &status)
 {
     status.albums    = getAlbums();
     status.playlists = getPlaylists();

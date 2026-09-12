@@ -79,8 +79,6 @@ int main(int, char **)
         }
 
         koji_ui::endMainWindow(state);
-
-
     }
 
     koji_app::cleanup(state);

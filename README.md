@@ -50,50 +50,28 @@ Koji requires the following file formats for songs and playlists:
 
 ### Songs
 
-Songs should be stored in the following directory structure:
+Songs should be stored in the following directory structure: `~/.config/koji/albums/<artist>/<album>/<title>.<ext>`. As an example: `~/.config/koji/albums/Grimes/Visions/Infinite Love without Fulfilment.mp3`
 
-```
-~/.config/koji/albums/<artist>/<album>/<track> - <title>.<ext>
-```
-
-Examples:
-
-```
-~/.config/koji/albums/Grimes/Visions/01 - Infinite Love without Fulfilment.mp3
-~/.config/koji/albums/Eminem/Venom (Music From The Motion Picture)/01 - Eminem - Venom(Official Audio).mp3
-```
+Each song in the album needs to contain all of the following metadata tags:
+- track
+- title
+- artist
 
 ### Playlists
 
-Playlists should be stored as m3u's in the directory `~/.config/koji/playlists`:
+Playlists should be stored as m3u's in the directory `~/.config/koji/playlists` with the following format: `~/.config/koji/playlists/<playlist_title>.m3u`
 
-```
-~/.config/koji/playlists/<playlist_title>.m3u
-```
+Each line in the playlist file should contain the path to a song in the directory `~/.config/koji/playlists/songs` with the following format: `<title>.<ext>`
 
-Example:
-
-```
-~/.config/koji/playlists/mortalwombat.m3u
-```
-
-Each line in the playlist file should contain the path to a song in the directory `~/.config/koji/playlists/songs`:
-
-```
-<title>.<ext>
-```
-
-Example:
-
-```
-Blitzkrieg Bop - 2016 Remaster.mp3
-```
+Each song in the playlist needs to contain all of the following metadata tags:
+- title
+- album
+- artist
 
 ## Screenshots
 
 ![queue-tab](docs/screenshots/queue.png)
 ![albums-tab](docs/screenshots/albums.png)
 ![playlists-tab](docs/screenshots/playlists.png)
-
 
 **[DISCLAIMER](docs/DISCLAIMER.md)**
