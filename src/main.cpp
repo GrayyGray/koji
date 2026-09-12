@@ -5,15 +5,15 @@
 #include "backend/player.h"
 #include "frontend/tabs.h"
 #include "frontend/ui.h"
+#include "frontend/playlist_editor.h"
 #include "imgui.h"
 
 int main(int, char **)
 {
     koji_app::AppState state;
-    state.window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN;
-    state.width        = 1280;
-    state.height       = 720;
-    state.title        = "koji";
+    state.width  = 1280;
+    state.height = 720;
+    state.title  = "koji";
 
     if (!koji_app::initialize(state))
     {

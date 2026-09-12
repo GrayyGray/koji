@@ -27,7 +27,7 @@ bool initialize(AppState &state)
     int scaled_width            = (int)(state.width * state.display_content_scale) * 2;
     int scaled_height           = (int)(state.height * state.display_content_scale) * 2;
 
-    state.window = SDL_CreateWindow(state.title, scaled_width, scaled_height, state.window_flags);
+    state.window = SDL_CreateWindow(state.title, scaled_width, scaled_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN);
     if (!state.window)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", state.window);

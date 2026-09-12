@@ -15,6 +15,8 @@
 #include "app.h"
 #include "imgui.h"
 
+using namespace std;
+
 namespace koji_player
 {
 bool initialize(koji_app::AppState &state, PlayerStatus &status)
@@ -44,14 +46,14 @@ bool initialize(koji_app::AppState &state, PlayerStatus &status)
 
 void cleanup(PlayerStatus &status) { mpv_destroy(status.mpv_context); }
 
-int indexSong(const std::vector<SongEntry> &songs, const SongEntry &song)
+int indexSong(const vector<SongEntry> &songs, const SongEntry &song)
 {
-    std::vector<SongEntry>::const_iterator iterator = std::find(songs.begin(), songs.end(), song);
+    vector<SongEntry>::const_iterator iterator = find(songs.begin(), songs.end(), song);
 
     if (iterator == songs.end())
         return -1;
 
-    return std::distance(songs.begin(), iterator);
+    return distance(songs.begin(), iterator);
 }
 
 void togglePause(PlayerStatus &status)
@@ -67,8 +69,8 @@ void toggleShuffle(PlayerStatus &status)
     if (status.shuffle)
     {
         status.unshuffled_queue = status.queue;
-        status.random_engine.seed(std::random_device{}());
-        std::ranges::shuffle(status.queue, status.random_engine);
+        status.random_engine.seed(random_device{}());
+        ranges::shuffle(status.queue, status.random_engine);
     }
     else
     {
@@ -109,7 +111,7 @@ void updatePause(const PlayerStatus &status)
         mpv_set_property_string(status.mpv_context, "pause", "no");
 }
 
-void updateVolume(const PlayerStatus &status) { mpv_set_property_string(status.mpv_context, "volume", std::to_string(status.volume).c_str()); }
+void updateVolume(const PlayerStatus &status) { mpv_set_property_string(status.mpv_context, "volume", to_string(status.volume).c_str()); }
 
 void stopSong(PlayerStatus &status)
 {
@@ -118,12 +120,12 @@ void stopSong(PlayerStatus &status)
     mpv_command_string(status.mpv_context, "stop");
 }
 
-void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs)
+void addSongsToQueue(PlayerStatus &status, vector<SongEntry> &songs)
 {
     if (status.shuffle)
     {
         status.unshuffled_queue.insert(status.unshuffled_queue.end(), songs.begin(), songs.end());
-        std::ranges::shuffle(songs, status.random_engine);
+        ranges::shuffle(songs, status.random_engine);
     }
 
     if (status.queue.empty())

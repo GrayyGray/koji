@@ -9,14 +9,13 @@ namespace koji_app
 {
 struct AppState
 {
-    ImGuiIO        *io;
-    const char     *title;
-    SDL_Window     *window;
-    SDL_Renderer   *renderer;
-    SDL_WindowFlags window_flags;
-    int             width, height;
-    float           display_content_scale;
-    bool            edit_playlist_window = false;
+    ImGuiIO      *io;
+    const char   *title;
+    SDL_Window   *window;
+    SDL_Renderer *renderer;
+    int           width, height;
+    float         display_content_scale;
+    bool          edit_playlist_window = false;
 };
 
 bool initialize(AppState &state);

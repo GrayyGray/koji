@@ -7,6 +7,8 @@
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
+using namespace koji_player;
+
 namespace koji_ui
 {
 void beginMainWindow(const koji_app::AppState &state)
@@ -56,22 +58,22 @@ void endTab()
     ImGui::EndTabItem();
 }
 
-void renderPlayer(const koji_player::PlayerStatus &status)
+void renderPlayer(const PlayerStatus &status)
 {
     ImGui::Separator();
     ImGui::BeginChild("footer", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     ImGui::SameLine();
-    ImGui::Text("%s %s", status.current_song == koji_player::SongEntry{} ? "⏹" : status.paused ? "⏸" : "⯈", status.current_song.title.empty() ? "nothing playing" : status.current_song.title.c_str());
+    ImGui::Text("%s %s", status.current_song == SongEntry{} ? "⏹" : status.paused ? "⏸" : "⯈", status.current_song.title.empty() ? "nothing playing" : status.current_song.title.c_str());
     ImGui::SameLine();
 
     const char *shuffle_mode = status.shuffle ? "Shuf:On" : "Shuf:Off";
-    const char *repeat_mode  = status.repeat_mode == koji_player::RepeatMode::Off ? "Rep:Off" : status.repeat_mode == koji_player::RepeatMode::All ? "Rep:All" : "Rep:Trk";
+    const char *repeat_mode  = status.repeat_mode == RepeatMode::Off ? "Rep:Off" : status.repeat_mode == RepeatMode::All ? "Rep:All" : "Rep:Trk";
 
     std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
-    std::string position_time     = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.position_seconds) : "--:--";
-    std::string duration_time     = status.current_song != koji_player::SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
+    std::string position_time     = status.current_song != SongEntry{} ? koji_utils::formatTime(status.position_seconds) : "--:--";
+    std::string duration_time     = status.current_song != SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
 
-    float playing_progress    = (status.current_song != koji_player::SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
+    float playing_progress    = (status.current_song != SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
     float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
