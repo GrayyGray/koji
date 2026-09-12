@@ -64,14 +64,13 @@ int main(int, char **)
 
         koji_ui::renderPlayer(status);
 
-
         if (state.edit_playlist_window)
         {
             ImGui::SetNextWindowSize(ImVec2(550, 680));
-            ImGui::Begin("Playlist Editor", &state.edit_playlist_window, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings | ImGuiWindowFlags_NoNavFocus); // ImGuiChildFlags_NavFlattened, 
+            ImGui::Begin("Playlist Editor", &state.edit_playlist_window, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings | ImGuiWindowFlags_NoNavFocus); // ImGuiChildFlags_NavFlattened,
 
             ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
-            
+
             ImGui::Text("this is a test");
 
             ImGui::PopItemFlag();

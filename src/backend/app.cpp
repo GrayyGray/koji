@@ -24,10 +24,10 @@ bool initialize(AppState &state)
     }
 
     state.display_content_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    int scaledWidth           = (int)(state.width * state.display_content_scale) * 2;
-    int scaledHeight          = (int)(state.height * state.display_content_scale) * 2;
+    int scaled_width            = (int)(state.width * state.display_content_scale) * 2;
+    int scaled_height           = (int)(state.height * state.display_content_scale) * 2;
 
-    state.window = SDL_CreateWindow(state.title, scaledWidth, scaledHeight, state.window_flags);
+    state.window = SDL_CreateWindow(state.title, scaled_width, scaled_height, state.window_flags);
     if (!state.window)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", state.window);
@@ -62,9 +62,7 @@ bool initialize(AppState &state)
     ImGui_ImplSDL3_InitForSDLRenderer(state.window, state.renderer);
     ImGui_ImplSDLRenderer3_Init(state.renderer);
 
-    
     state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 36.0f);
-    
 
     SDL_ShowWindow(state.window);
     return true;

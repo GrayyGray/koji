@@ -14,7 +14,7 @@ void beginMainWindow(const koji_app::AppState &state)
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
 
-    state.io->DisplaySize = ImVec2(state.width * 2, state.height *2);
+    state.io->DisplaySize = ImVec2(state.width * 2, state.height * 2);
 
     ImGui::NewFrame();
     ImGui::SetNextWindowPos(ImVec2(0, 0));

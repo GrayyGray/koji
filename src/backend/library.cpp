@@ -113,14 +113,14 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 
         TagLib::FileRef song_file(song.path().c_str());
 
-        int track_index;
+        int    track_index;
         string artist;
         string title;
         if (!song_file.isNull() && song_file.tag())
         {
             track_index = song_file.tag()->track();
-            title = song_file.tag()->title().to8Bit(true);
-            artist = song_file.tag()->artist().to8Bit(true);
+            title       = song_file.tag()->title().to8Bit(true);
+            artist      = song_file.tag()->artist().to8Bit(true);
         }
         else
             continue;
@@ -139,7 +139,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 
     vector<SongEntry> songs;
     songs.reserve(tracks.size());
-    
+
     for (const tuple<int, SongEntry> &track : tracks)
         songs.push_back(get<1>(track));
 
@@ -177,7 +177,7 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
         string artist;
         if (!song_file.isNull() && song_file.tag())
         {
-            title = song_file.tag()->title().to8Bit(true);
+            title  = song_file.tag()->title().to8Bit(true);
             album  = song_file.tag()->album().to8Bit(true);
             artist = song_file.tag()->artist().to8Bit(true);
         }
