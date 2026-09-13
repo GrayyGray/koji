@@ -5,8 +5,5 @@
 
 namespace koji_ui
 {
-void beginMainWindow(const koji_app::AppState &state);
-void endMainWindow(const koji_app::AppState &state);
-
-void renderPlayer(const koji_player::PlayerStatus &status);
+void editorWindow(koji_app::AppState &state, koji_player::PlayerStatus &status);
 } // namespace koji_ui

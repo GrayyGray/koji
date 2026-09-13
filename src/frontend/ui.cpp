@@ -38,26 +38,6 @@ void endMainWindow(const koji_app::AppState &state)
     SDL_RenderPresent(state.renderer);
 }
 
-bool beginTab(const char *label)
-{
-    if (!ImGui::BeginTabItem(label, nullptr, ImGuiTabItemFlags_NoArrowNav))
-        return false;
-
-    ImGui::Spacing();
-    ImGui::BeginChild("mainBrowser", ImVec2(0, -100), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
-    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-    ImGui::Separator();
-
-    return true;
-}
-
-void endTab()
-{
-    ImGui::PopItemFlag();
-    ImGui::EndChild();
-    ImGui::EndTabItem();
-}
-
 void renderPlayer(const PlayerStatus &status)
 {
     ImGui::Separator();

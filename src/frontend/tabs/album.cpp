@@ -5,6 +5,7 @@
 #include "backend/library.h"
 #include "backend/utils.h"
 #include "imgui.h"
+#include "tab.h"
 
 using namespace std;
 using namespace koji_app;
@@ -16,68 +17,59 @@ namespace koji_ui
 
 void albumTab(AppState &state, PlayerStatus &status)
 {
-    ImGui::BeginTabItem("Albums", nullptr, ImGuiTabItemFlags_NoArrowNav);
-    ImGui::Spacing();
-    ImGui::BeginChild("tabFrame", ImVec2(0, -100), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
-    ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
-    ImGui::Separator();
-
-    ImGui::BeginTable("albumTable", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
-
-    ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
-
-    ImGui::TableSetupColumn("Artist");
-    ImGui::TableSetupColumn("Album");
-
-    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
-    ImGui::TableHeadersRow();
-    ImGui::PopStyleColor();
-    ImGui::PopItemFlag();
-
-
-    for (int index = 0; index < status.albums.size(); index++)
+    if (beginTab("Albums"))
     {
-        const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
+        ImGui::BeginTable("albumTable", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 
-        ImGui::PushID(index);
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
+        ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 
-        if (ImGui::Selectable(status.queue[index].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+        ImGui::TableSetupColumn("Artist");
+        ImGui::TableSetupColumn("Album");
+
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
+        ImGui::TableHeadersRow();
+        ImGui::PopStyleColor();
+        ImGui::PopItemFlag();
+
+
+        for (int index = 0; index < status.albums.size(); index++)
         {
-            if (!state.io->KeyShift && !status.queue.empty())
-                status.queue.clear();
-            vector<SongEntry> songs;
-            songs = getAlbumSongs(status.albums[index]);
-            addSongsToQueue(status, songs);
-        }
+            ImGui::PushID(index);
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            float avalible_width = ImGui::GetContentRegionAvail().x;
-            
-            if (ImGui::Button("Append to queue", ImVec2(avalible_width, 0)))
+            if (ImGui::Selectable(status.albums[index].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
+                if (!state.io->KeyShift && !status.queue.empty())
+                    status.queue.clear();
                 vector<SongEntry> songs;
                 songs = getAlbumSongs(status.albums[index]);
                 addSongsToQueue(status, songs);
             }
-            
-            ImGui::EndPopup();
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                float avalible_width = ImGui::GetContentRegionAvail().x;
+                
+                if (ImGui::Button("Append to queue", ImVec2(avalible_width, 0)))
+                {
+                    vector<SongEntry> songs;
+                    songs = getAlbumSongs(status.albums[index]);
+                    addSongsToQueue(status, songs);
+                }
+                
+                ImGui::EndPopup();
+            }
+
+            ImGui::TableNextColumn();
+            ImGui::Text("%s", status.albums[index].title.c_str());
+
+            ImGui::PopID();
         }
 
-        if (index < status.queue.size() && status.queue[index] == status.current_song)
-            ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-
-        ImGui::TableNextColumn();
-        ImGui::Text("%s", status.queue[index].album.c_str());
-
-        ImGui::PopID();
+        ImGui::EndTable();
+        endTab();
     }
-
-    ImGui::EndTable();
-    ImGui::PopItemFlag();
-    ImGui::EndChild();
-    ImGui::EndTabItem();
+    
 }
 } // namespace koji_ui
