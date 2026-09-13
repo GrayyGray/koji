@@ -6,7 +6,6 @@
 #include "backend/utils.h"
 #include "imgui.h"
 
-
 using namespace std;
 using namespace koji_app;
 using namespace koji_player;
@@ -14,25 +13,6 @@ using namespace koji_library;
 
 namespace koji_ui
 {
-
-void appendToQueueButton(PlayerStatus &status, int index, float button_width)
-{
-    if (ImGui::Button("Append to queue", ImVec2(button_width, 0)))
-    {
-        vector<SongEntry> songs;
-        songs = getPlaylistSongs(status.playlists[index]);
-        addSongsToQueue(status, songs);
-    }
-}
-
-void editPlaylistButton(AppState &state, float button_width)
-{
-    if (ImGui::Button("Edit Playlist", ImVec2(button_width, 0)))
-    {
-        state.edit_window = true;
-    }
-}
-
 void playlistTab(AppState &state, PlayerStatus &status)
 {
     ImGui::BeginTabItem("Playlists", nullptr, ImGuiTabItemFlags_NoArrowNav);
@@ -73,10 +53,19 @@ void playlistTab(AppState &state, PlayerStatus &status)
         if (ImGui::BeginPopupContextItem())
         {
             float avalible_width = ImGui::GetContentRegionAvail().x;
-            
-            appendToQueueButton(status, index, avalible_width);
-            editPlaylistButton(state, avalible_width);
-            
+
+            if (ImGui::Button("Append to queue", ImVec2(avalible_width, 0)))
+            {
+                vector<SongEntry> songs;
+                songs = getPlaylistSongs(status.playlists[index]);
+                addSongsToQueue(status, songs);
+            }
+           
+            if (ImGui::Button("Edit Playlist", ImVec2(avalible_width, 0)))
+            {
+                state.edit_window = true;
+            }
+                    
             ImGui::EndPopup();
         }
 

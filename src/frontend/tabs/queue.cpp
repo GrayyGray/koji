@@ -15,12 +15,6 @@ using namespace koji_library;
 namespace koji_ui
 {
 
-void removeFromQueueButton(vector<SongEntry> &queue, int song_index, float button_width)
-{
-    if (ImGui::Button("Remove from queue", ImVec2(button_width, 0)))
-        queue.erase(queue.begin() + song_index);
-}
-
 void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
 {
     ImGui::BeginTabItem("Queue", nullptr, ImGuiTabItemFlags_NoArrowNav);
@@ -62,7 +56,8 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
         {
             float avalible_width = ImGui::GetContentRegionAvail().x;
             
-            removeFromQueueButton(status.queue, index, avalible_width);
+            if (ImGui::Button("Remove from queue", ImVec2(avalible_width, 0)))
+                status.queue.erase(status.queue.begin() + index);
             
             ImGui::EndPopup();
         }
