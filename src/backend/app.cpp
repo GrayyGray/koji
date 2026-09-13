@@ -62,7 +62,9 @@ bool initialize(AppState &state)
     ImGui_ImplSDL3_InitForSDLRenderer(state.window, state.renderer);
     ImGui_ImplSDLRenderer3_Init(state.renderer);
 
-    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 36.0f);
+    ImFontConfig font_config{};
+    font_config.FontDataOwnedByAtlas = false;
+    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 36.0f, &font_config);
 
     SDL_ShowWindow(state.window);
     return true;
@@ -90,6 +92,7 @@ bool pollEvents(const AppState &state)
 
 void cleanup(AppState &state)
 {
+    state.io->Fonts->Clear();
     ImGui_ImplSDLRenderer3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
