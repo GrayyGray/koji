@@ -15,7 +15,7 @@ struct AppState
     SDL_Renderer *renderer;
     int           width, height;
     float         display_content_scale;
-    bool          edit_playlist_window = false;
+    bool          edit_window = false;
 };
 
 bool initialize(AppState &state);

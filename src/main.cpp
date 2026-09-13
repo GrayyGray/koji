@@ -3,9 +3,9 @@
 #include "backend/app.h"
 #include "backend/library.h"
 #include "backend/player.h"
-#include "frontend/tabs.h"
+#include "frontend/tabs/tabs.h"
 #include "frontend/ui.h"
-#include "frontend/playlist_editor.h"
+#include "frontend/windows/windows.h"
 #include "imgui.h"
 
 int main(int, char **)
@@ -44,30 +44,20 @@ int main(int, char **)
             done = true;
 
         koji_ui::beginMainWindow(state);
+
         ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
-        if (koji_ui::beginTab("Queue"))
-        {
-            koji_ui::tab(state, status, "queue");
-            koji_ui::endTab();
-        }
-        if (koji_ui::beginTab("Albums"))
-        {
-            koji_ui::tab(state, status, "album");
-            koji_ui::endTab();
-        }
-        if (koji_ui::beginTab("Playlists"))
-        {
-            koji_ui::tab(state, status, "playlist");
-            koji_ui::endTab();
-        }
+        koji_ui::queueTab(state, status);
+        koji_ui::albumTab(state, status);
+        koji_ui::playlistTab(state, status);
+
         ImGui::EndTabBar();
 
         koji_ui::renderPlayer(status);
 
-        if (state.edit_playlist_window)
+        if (state.edit_window)
         {
             ImGui::SetNextWindowSize(ImVec2(550, 680));
-            ImGui::Begin("Playlist Editor", &state.edit_playlist_window, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings | ImGuiWindowFlags_NoNavFocus); // ImGuiChildFlags_NavFlattened,
+            ImGui::Begin("Playlist Editor", &state.edit_window, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings | ImGuiWindowFlags_NoNavFocus); // ImGuiChildFlags_NavFlattened,
 
             ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 

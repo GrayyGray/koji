@@ -1,8 +1,9 @@
 COMPILER = clang++
 
 EXE = koji
-OUT_DIR = out
+OUT_DIR = out=
 BACKEND_DIRECTORY = dependencies/imgui
+SOURCE_CODE_DIRECTORY = src
 
 $(shell mkdir -p $(OUT_DIR))
 
@@ -12,7 +13,7 @@ SOURCES += $(BACKEND_DIRECTORY)/backends/imgui_impl_sdl3.cpp $(BACKEND_DIRECTORY
 
 
 OBJECTS = $(addprefix $(OUT_DIR)/, $(notdir $(SOURCES:.cpp=.o)))
-FLAGS = -std=c++20 -I$(BACKEND_DIRECTORY) -I$(BACKEND_DIRECTORY)/backends -g -Wall -Wformat $(shell pkg-config --cflags sdl3 mpv taglib)
+FLAGS = -std=c++20 -I$(BACKEND_DIRECTORY) -I$(BACKEND_DIRECTORY)/backends -I$(SOURCE_CODE_DIRECTORY) -g -Wall -Wformat $(shell pkg-config --cflags sdl3 mpv taglib) 
 LIBS = -ldl $(shell pkg-config --libs sdl3 mpv taglib) 
 FONT_OBJECT = $(OUT_DIR)/font.o
 

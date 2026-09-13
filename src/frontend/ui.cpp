@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include <SDL3/SDL.h>
-#include "../backend/app.h"
-#include "../backend/player.h"
-#include "../backend/utils.h"
+#include "backend/app.h"
+#include "backend/player.h"
+#include "backend/utils.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
