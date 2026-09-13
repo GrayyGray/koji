@@ -57,6 +57,11 @@ void albumTab(AppState &state, PlayerStatus &status)
                     songs = getAlbumSongs(status.albums[index]);
                     addSongsToQueue(status, songs);
                 }
+                if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
+                {
+                    state.edit_window = true;
+                    status.editor_context = {{}, {status.albums[index]}, {}};
+                }
                 
                 ImGui::EndPopup();
             }

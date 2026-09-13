@@ -38,6 +38,13 @@ struct SongEntry
     bool                  operator==(const SongEntry &) const = default;
 };
 
+struct EditorContext
+{
+    SongEntry song_to_append = {};
+    AlbumEntry album_to_apend = {};
+    PlaylistEntry playlist_to_edit = {};
+};
+
 enum class RepeatMode
 {
     Off,
@@ -61,6 +68,7 @@ struct PlayerStatus
 
     std::mt19937 random_engine{std::random_device{}()};
     mpv_handle  *mpv_context = nullptr;
+    EditorContext editor_context = {};
 };
 
 bool initialize(koji_app::AppState &state, PlayerStatus &status);
@@ -72,9 +80,9 @@ void updatePause(const PlayerStatus &status);
 void updateVolume(const PlayerStatus &status);
 void stopSong(PlayerStatus &status);
 
-void togglePause(koji_player::PlayerStatus &status);
-void toggleShuffle(koji_player::PlayerStatus &status);
-void toggleRepeatMode(koji_player::RepeatMode &repeat_mode);
+void togglePause(PlayerStatus &status);
+void toggleShuffle(PlayerStatus &status);
+void toggleRepeatMode(RepeatMode &repeat_mode);
 
 void addSongsToQueue(PlayerStatus &status, std::vector<SongEntry> &songs);
 } // namespace koji_player

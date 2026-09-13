@@ -4,6 +4,7 @@
 #include "frontend/ui.h"
 #include "backend/library.h"
 #include "backend/utils.h"
+#include "backend/player.h"
 #include "imgui.h"
 #include "tab.h"
 
@@ -59,6 +60,7 @@ void playlistTab(AppState &state, PlayerStatus &status)
                 if (ImGui::Button("Edit Playlist", ImVec2(avalible_width, 0)))
                 {
                     state.edit_window = true;
+                    status.editor_context = {{}, {}, {status.playlists[index]}};
                 }
                         
                 ImGui::EndPopup();

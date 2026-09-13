@@ -14,6 +14,7 @@ int main(int, char **)
     state.width  = 1280;
     state.height = 720;
     state.title  = "koji";
+    // state.edit_window = true;
 
     if (!koji_app::initialize(state))
     {

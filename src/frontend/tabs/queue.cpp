@@ -54,6 +54,11 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
                 
                 if (ImGui::Button("Remove from queue", ImVec2(avalible_width, 0)))
                     status.queue.erase(status.queue.begin() + index);
+                if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
+                {
+                    state.edit_window = true;
+                    status.editor_context = {{status.queue[index]}, {}, {}};
+                }
                 
                 ImGui::EndPopup();
             }
