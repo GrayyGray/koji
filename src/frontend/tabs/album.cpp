@@ -12,7 +12,7 @@ using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
 
-namespace koji_ui
+namespace koji_frontend
 {
 
 void albumTab(AppState &state, PlayerStatus &status)
@@ -72,4 +72,4 @@ void albumTab(AppState &state, PlayerStatus &status)
     }
     
 }
-} // namespace koji_ui
+} // namespace koji_frontend

@@ -13,7 +13,7 @@ using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
 
-namespace koji_ui
+namespace koji_frontend
 {
 
 void editorWindow(koji_app::AppState &state, koji_player::PlayerStatus &status)
@@ -30,4 +30,4 @@ void editorWindow(koji_app::AppState &state, koji_player::PlayerStatus &status)
     ImGui::End();
 }
 
-} // namespace koji_ui
+} // namespace koji_frontend

@@ -12,7 +12,7 @@ using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
 
-namespace koji_ui
+namespace koji_frontend
 {
 void playlistTab(AppState &state, PlayerStatus &status)
 {
@@ -71,4 +71,4 @@ void playlistTab(AppState &state, PlayerStatus &status)
         endTab();
     }
 }
-} // namespace koji_ui
+} // namespace koji_frontend

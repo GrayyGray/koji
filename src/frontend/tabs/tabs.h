@@ -5,9 +5,9 @@
 #include "backend/app.h"
 #include "backend/player.h"
 
-namespace koji_ui
+namespace koji_frontend
 {
 void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
 void albumTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
 void playlistTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
-} // namespace koji_ui
+} // namespace koji_frontend

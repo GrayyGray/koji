@@ -43,23 +43,23 @@ int main(int, char **)
         if (!koji_player::pollEvents(status))
             done = true;
 
-        koji_ui::beginMainWindow(state);
+        koji_frontend::beginMainWindow(state);
 
         ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
-        koji_ui::queueTab(state, status);
-        koji_ui::albumTab(state, status);
-        koji_ui::playlistTab(state, status);
+        koji_frontend::queueTab(state, status);
+        koji_frontend::albumTab(state, status);
+        koji_frontend::playlistTab(state, status);
 
         ImGui::EndTabBar();
 
-        koji_ui::renderPlayer(status);
+        koji_frontend::renderPlayer(status);
 
         if (state.edit_window)
         {
-            koji_ui::editorWindow(state, status);
+            koji_frontend::editorWindow(state, status);
         }
 
-        koji_ui::endMainWindow(state);
+        koji_frontend::endMainWindow(state);
     }
 
     koji_app::cleanup(state);

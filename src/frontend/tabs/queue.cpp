@@ -13,7 +13,7 @@ using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
 
-namespace koji_ui
+namespace koji_frontend
 {
 
 void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
@@ -75,4 +75,4 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
         endTab();
     }
 }
-} // namespace koji_ui
+} // namespace koji_frontend

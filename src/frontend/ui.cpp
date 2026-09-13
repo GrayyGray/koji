@@ -9,7 +9,7 @@
 
 using namespace koji_player;
 
-namespace koji_ui
+namespace koji_frontend
 {
 void beginMainWindow(const koji_app::AppState &state)
 {
@@ -78,4 +78,4 @@ void renderPlayer(const PlayerStatus &status)
     ImGui::EndChild();
 }
 
-} // namespace koji_ui
+} // namespace koji_frontend
