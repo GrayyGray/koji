@@ -1,7 +1,7 @@
 COMPILER = clang++
 
 EXE = koji
-OUT_DIR = out=
+OUT_DIR = out
 BACKEND_DIRECTORY = dependencies/imgui
 SOURCE_CODE_DIRECTORY = src
 
