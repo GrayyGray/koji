@@ -43,6 +43,10 @@ struct EditorContext
     SongEntry song_to_append = {};
     AlbumEntry album_to_apend = {};
     PlaylistEntry playlist_to_edit = {};
+    std::vector<SongEntry> basket;
+    std::vector<SongEntry> playlist;
+    SongEntry basket_selected;
+    SongEntry playlist_selected;
 };
 
 enum class RepeatMode
