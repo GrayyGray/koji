@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "tabs.h"
-#include "frontend/ui.h"
 #include "backend/library.h"
-#include "backend/utils.h"
 #include "backend/player.h"
+#include "backend/utils.h"
+#include "frontend/ui.h"
 #include "imgui.h"
 #include "tab.h"
+#include "tabs.h"
 
 using namespace std;
 using namespace koji_app;
@@ -29,7 +29,6 @@ void playlistTab(AppState &state, PlayerStatus &status)
         ImGui::TableHeadersRow();
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
-
 
         for (int index = 0; index < status.playlists.size(); index++)
         {
@@ -56,13 +55,13 @@ void playlistTab(AppState &state, PlayerStatus &status)
                     songs = getPlaylistSongs(status.playlists[index]);
                     addSongsToQueue(status, songs);
                 }
-            
+
                 if (ImGui::Button("Edit Playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.edit_window = true;
+                    state.edit_window     = true;
                     status.editor_context = {{}, {}, {status.playlists[index]}};
                 }
-                        
+
                 ImGui::EndPopup();
             }
 

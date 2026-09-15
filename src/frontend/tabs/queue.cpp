@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "tabs.h"
-#include "frontend/ui.h"
 #include "backend/library.h"
 #include "backend/utils.h"
+#include "frontend/ui.h"
 #include "imgui.h"
 #include "tab.h"
-
+#include "tabs.h"
 
 using namespace std;
 using namespace koji_app;
@@ -35,7 +34,6 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-
         for (int index = 0; index < status.queue.size(); index++)
         {
             ImGui::PushID(index);
@@ -51,15 +49,15 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
             if (ImGui::BeginPopupContextItem())
             {
                 float avalible_width = ImGui::GetContentRegionAvail().x;
-                
+
                 if (ImGui::Button("Remove from queue", ImVec2(avalible_width, 0)))
                     status.queue.erase(status.queue.begin() + index);
                 if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.edit_window = true;
+                    state.edit_window     = true;
                     status.editor_context = {{status.queue[index]}, {}, {}};
                 }
-                
+
                 ImGui::EndPopup();
             }
 

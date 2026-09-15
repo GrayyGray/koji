@@ -40,13 +40,13 @@ struct SongEntry
 
 struct EditorContext
 {
-    SongEntry song_to_append = {};
-    AlbumEntry album_to_apend = {};
-    PlaylistEntry playlist_to_edit = {};
-    std::vector<SongEntry> basket;
-    std::vector<SongEntry> playlist;
-    SongEntry basket_selected;
-    SongEntry playlist_selected;
+    SongEntry              song_to_append   = {};
+    AlbumEntry             album_to_apend   = {};
+    PlaylistEntry          playlist_to_edit = {};
+    std::vector<SongEntry> basket_container;
+    std::vector<SongEntry> playlist_container;
+    SongEntry              basket_selected_song;
+    SongEntry              playlist_selected_song;
 };
 
 enum class RepeatMode
@@ -70,8 +70,8 @@ struct PlayerStatus
     std::vector<SongEntry>     queue;
     std::vector<SongEntry>     unshuffled_queue;
 
-    std::mt19937 random_engine{std::random_device{}()};
-    mpv_handle  *mpv_context = nullptr;
+    std::mt19937  random_engine{std::random_device{}()};
+    mpv_handle   *mpv_context    = nullptr;
     EditorContext editor_context = {};
 };
 
