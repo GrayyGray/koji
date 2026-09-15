@@ -97,12 +97,14 @@ void buttonRight(EditorContext &context)
         if (context.playlist_selected_song != SongEntry{} && context.basket_selected_song == SongEntry{})
         {
             vector<SongEntry>::iterator selected = find(context.playlist_container.begin(), context.playlist_container.end(), context.playlist_selected_song);
-            if (selected != context.playlist_container.end())
+            if (context.playlist_container.size() == 0 || selected != context.playlist_container.end())
             {
                 context.basket_container.push_back(context.playlist_selected_song);
-                context.playlist_container.erase(selected);
                 context.playlist_selected_song = {};
+                context.basket_selected_song = context.basket_container[context.basket_container.size() - 1];
             }
+            if (selected != context.playlist_container.end())
+                context.playlist_container.erase(selected);
         }
     }
 }
