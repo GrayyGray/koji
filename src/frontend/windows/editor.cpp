@@ -123,20 +123,24 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     ImGui::BeginChild("playlistChild", ImVec2(table_size_x, table_size_y));
     if (ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
     {
+        int i = 0;
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
-
         for (const SongEntry &song : status.editor_context.playlist_container)
         {
             ImGui::TableNextColumn();
 
+            ImGui::PushID(i);
             if (ImGui::Selectable(song.title.c_str(), true, ImGuiSelectableFlags_None))
             {
                 status.editor_context.basket_selected_song   = {};
                 status.editor_context.playlist_selected_song = song;
             }
-
+            ImGui::PopID();
+            ++i;
+            
             if (song == status.editor_context.playlist_selected_song)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
+            
         }
         ImGui::EndTable();
     }
@@ -154,16 +158,20 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     ImGui::BeginChild("basketChild", ImVec2(table_size_x, table_size_y));
     if (ImGui::BeginTable("basketTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
     {
+        int i = 0;
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
         for (const SongEntry &song : status.editor_context.basket_container)
         {
             ImGui::TableNextColumn();
 
+            ImGui::PushID(i);
             if (ImGui::Selectable(song.title.c_str(), true, ImGuiSelectableFlags_None))
             {
                 status.editor_context.playlist_selected_song = {};
                 status.editor_context.basket_selected_song   = song;
             }
+            ImGui::PopID();
+            ++i;
 
             if (song == status.editor_context.basket_selected_song)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
