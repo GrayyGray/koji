@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "../../backend/library.h"
-#include "../../backend/utils.h"
+#include "../../backend/utils/color.h"
+#include "../../backend/utils/time.h"
 #include "../../frontend/ui.h"
 #include "imgui.h"
 #include "tab.h"
 #include "tabs.h"
 
 using namespace std;
+using namespace koji;
 using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
@@ -17,7 +19,7 @@ namespace koji_frontend
 
 void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
 {
-    const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
+    const ImVec4 selected_background_color = backend::utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
     if (beginTab("Queue"))
     {
         ImGui::BeginTable("queueTable", 4, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
@@ -72,7 +74,7 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
             ImGui::Text("%s", status.queue[index].artist.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", koji_utils::formatTime(status.queue[index].duration).c_str());
+            ImGui::Text("%s", backend::utils::formatTime(status.queue[index].duration).c_str());
 
             ImGui::PopID();
         }

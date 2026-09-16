@@ -3,10 +3,8 @@
 #pragma once
 
 #include <string>
-#include "imgui.h"
 
-namespace koji_utils
+namespace koji::backend::utils
 {
 std::string formatTime(const float seconds);
-ImVec4      darkenColor(const ImVec4 &color, float amount);
-} // namespace koji_utils
+} // namespace koji::backend::utils

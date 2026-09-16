@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include <algorithm>
 #include <format>
-#include "imgui.h"
+#include "time.h"
 
-namespace koji_utils
+namespace koji::backend::utils
 {
 std::string formatTime(const float seconds)
 {
@@ -20,12 +19,4 @@ std::string formatTime(const float seconds)
         return std::format("{:02}:{:02}:{:02}", hours, minutes, secs);
     return std::format("{:02}:{:02}", minutes, secs);
 }
-
-ImVec4 darkenColor(const ImVec4 &color, float amount)
-{
-    float red   = std::max(0.0f, color.x - 0.2f);
-    float green = std::max(0.0f, color.y - 0.2f);
-    float blue  = std::max(0.0f, color.z - 0.2f);
-    return ImVec4(red, green, blue, color.w);
-}
-} // namespace koji_utils
+} // namespace koji::backend::utils

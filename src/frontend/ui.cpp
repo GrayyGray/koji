@@ -3,11 +3,13 @@
 #include <SDL3/SDL.h>
 #include "../backend/app.h"
 #include "../backend/player.h"
-#include "../backend/utils.h"
+#include "../backend/utils/time.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 
+using namespace koji;
 using namespace koji_player;
+
 
 namespace koji_frontend
 {
@@ -50,8 +52,8 @@ void renderPlayer(const PlayerStatus &status)
     const char *repeat_mode  = status.repeat_mode == RepeatMode::Off ? "Rep:Off" : status.repeat_mode == RepeatMode::All ? "Rep:All" : "Rep:Trk";
 
     std::string volume_percentage = ("Vol:" + std::to_string(status.volume) + "%");
-    std::string position_time     = status.current_song != SongEntry{} ? koji_utils::formatTime(status.position_seconds) : "--:--";
-    std::string duration_time     = status.current_song != SongEntry{} ? koji_utils::formatTime(status.current_song.duration) : "--:--";
+    std::string position_time     = status.current_song != SongEntry{} ? backend::utils::formatTime(status.position_seconds) : "--:--";
+    std::string duration_time     = status.current_song != SongEntry{} ? backend::utils::formatTime(status.current_song.duration) : "--:--";
 
     float playing_progress    = (status.current_song != SongEntry{} && status.current_song.duration > 0.0f) ? (status.position_seconds / status.current_song.duration) : 0.0f;
     float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;

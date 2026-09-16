@@ -7,11 +7,12 @@
 #include "../../backend/app.h"
 #include "../../backend/library.h"
 #include "../../backend/player.h"
-#include "../../backend/utils.h"
+#include "../../backend/utils/color.h"
 #include "imgui.h"
 #include "windows.h"
 
 using namespace std;
+using namespace koji;
 using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
@@ -135,7 +136,7 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     const float  button_size               = 48.0f;
     const float  table_size_y              = ImGui::GetContentRegionAvail().y;
     const float  table_size_x              = ImGui::GetContentRegionAvail().x / 2 - (button_size);
-    const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
+    const ImVec4 selected_background_color = backend::utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
     ImGui::BeginChild("playlistChild", ImVec2(table_size_x, table_size_y));
     if (ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
