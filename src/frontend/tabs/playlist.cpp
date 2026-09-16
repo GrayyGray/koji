@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "backend/library.h"
-#include "backend/player.h"
-#include "backend/utils.h"
-#include "frontend/ui.h"
+#include "../../backend/library.h"
+#include "../../backend/player.h"
+#include "../../backend/utils.h"
+#include "../../frontend/ui.h"
 #include "imgui.h"
 #include "tab.h"
 #include "tabs.h"

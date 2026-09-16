@@ -4,10 +4,10 @@
 #include <tuple>
 #include <vector>
 #include <stdlib.h>
-#include "backend/app.h"
-#include "backend/library.h"
-#include "backend/player.h"
-#include "backend/utils.h"
+#include "../../backend/app.h"
+#include "../../backend/library.h"
+#include "../../backend/player.h"
+#include "../../backend/utils.h"
 #include "imgui.h"
 #include "windows.h"
 
@@ -66,7 +66,7 @@ void buttonDown(EditorContext &context, float button_size)
     {
         selected = find(context.basket_container.begin(), context.basket_container.end(), context.basket_selected_song);
 
-        if (selected != context.basket_container.end() && selected + 1!= context.basket_container.end())
+        if (selected != context.basket_container.end() && selected + 1 != context.basket_container.end())
         {
             context.basket_container.erase(selected);
             context.basket_container.insert(selected + 1, context.basket_selected_song);
