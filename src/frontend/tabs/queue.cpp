@@ -24,9 +24,9 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
 
         ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 
-        ImGui::TableSetupColumn("Artist");
         ImGui::TableSetupColumn("Title");
         ImGui::TableSetupColumn("Album");
+        ImGui::TableSetupColumn("Artist");
         ImGui::TableSetupColumn("Duration");
 
         ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetStyleColorVec4(ImGuiCol_TableHeaderBg));
@@ -40,7 +40,7 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
 
-            if (ImGui::Selectable(status.queue[index].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(status.queue[index].title.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
                 status.current_song = status.queue[index];
                 updateCurrentSong(status);
@@ -66,9 +66,11 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", status.queue[index].title.c_str());
-            ImGui::TableNextColumn();
             ImGui::Text("%s", status.queue[index].album.c_str());
+
+            ImGui::TableNextColumn();
+            ImGui::Text("%s", status.queue[index].artist.c_str());
+            
             ImGui::TableNextColumn();
             ImGui::Text("%s", koji_utils::formatTime(status.queue[index].duration).c_str());
 
