@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include <tuple>
 #include <vector>
+#include <algorithm>
 #include <stdlib.h>
 #include "backend/app.h"
 #include "backend/library.h"
@@ -114,11 +115,11 @@ void buttonRight(EditorContext &context, float button_size)
 
 void playlistEditorMenu(AppState &state, PlayerStatus &status)
 {
+    const float margin = 4.0f;
+    const float        button_size               = 48.0f;
+    const float table_size_y = ImGui::GetContentRegionAvail().y;
+    const float table_size_x = ImGui::GetContentRegionAvail().x / 2 - (button_size);
     const ImVec4 selected_background_color = koji_utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
-    float        button_size               = 43.0f;
-
-    float table_size_x = ImGui::GetContentRegionAvail().x / 2 - (button_size);
-    float table_size_y = ImGui::GetContentRegionAvail().y;
 
     ImGui::BeginChild("playlistChild", ImVec2(table_size_x, table_size_y));
     if (ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
@@ -150,7 +151,22 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     buttonUp(status.editor_context, button_size);
     buttonDown(status.editor_context, button_size);
     buttonLeft(status.editor_context, button_size);
-    buttonRight(status.editor_context, button_size);
+    buttonRight(status.editor_context, button_size); 
+    
+    
+    // For saving and canceling buttons
+    const ImVec2 text_size = ImGui::CalcTextSize("Cancel");
+    const float scale = std::min((button_size - margin * 2.0f) / text_size.x, (button_size - margin * 2.0f) / text_size.y);
+    const float original_scale = ImGui::GetFont()->Scale;
+
+    ImGui::SetWindowFontScale(scale);
+
+    if (ImGui::Button("Save", ImVec2(button_size, button_size))) {}
+    if (ImGui::Button("Cancel", ImVec2(button_size, button_size))) {}
+
+    ImGui::SetWindowFontScale(original_scale);
+
+
 
     ImGui::EndChild();
     ImGui::SameLine();

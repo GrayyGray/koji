@@ -107,9 +107,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
     for (const auto &song : filesystem::recursive_directory_iterator(album.path.c_str()))
     {
         if (filesystem::is_directory(song))
-        {
             continue;
-        }
 
         string song_path = song.path().c_str();
 
