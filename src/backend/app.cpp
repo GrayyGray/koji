@@ -9,8 +9,8 @@
 #include "player.h"
 
 // NOLINTBEGIN(readability-identifier-naming)
-extern const unsigned char _binary_src_assets_GoNotoCurrent_Regular_ttf_start[];
-extern const unsigned char _binary_src_assets_GoNotoCurrent_Regular_ttf_end[];
+extern const unsigned char _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start[];
+extern const unsigned char _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_end[];
 // NOLINTEND(readability-identifier-naming)
 
 namespace koji_app
@@ -64,7 +64,7 @@ bool initialize(AppState &state)
 
     ImFontConfig font_config{};
     font_config.FontDataOwnedByAtlas = false;
-    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_src_assets_GoNotoCurrent_Regular_ttf_start), _binary_src_assets_GoNotoCurrent_Regular_ttf_end - _binary_src_assets_GoNotoCurrent_Regular_ttf_start, 36.0f, &font_config);
+    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start), _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_end - _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start, 36.0f, &font_config);
 
     SDL_ShowWindow(state.window);
     return true;

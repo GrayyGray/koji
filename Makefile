@@ -11,23 +11,23 @@ SOURCES += $(BACKEND_DIRECTORY)/imgui.cpp $(BACKEND_DIRECTORY)/imgui_demo.cpp $(
 SOURCES += $(BACKEND_DIRECTORY)/backends/imgui_impl_sdl3.cpp $(BACKEND_DIRECTORY)/backends/imgui_impl_sdlrenderer3.cpp
 
 
-OBJECTS = $(addprefix $(OUT_DIR)/, $(notdir $(SOURCES:.cpp=.o)))
+OBJECTS = $(addprefix $(OUT_DIR)/,$(subst /,-,$(SOURCES:.cpp=.o)))
 FLAGS = -std=c++20 -I$(BACKEND_DIRECTORY) -I$(BACKEND_DIRECTORY)/backends -g -Wall -Wformat $(shell pkg-config --cflags sdl3 mpv taglib) 
 LIBS = -ldl $(shell pkg-config --libs sdl3 mpv taglib) 
-FONT_OBJECT = $(OUT_DIR)/font.o
+FONT_OBJECT = $(OUT_DIR)/dependencies-assets-GoNotoCurrent_Regular.o
 
 all: $(EXE)
 
 $(EXE): $(OBJECTS) $(FONT_OBJECT)
 	$(COMPILER) $(OBJECTS) $(FONT_OBJECT) -o $(EXE) $(LIBS)
 
-$(FONT_OBJECT): dependencies/assets/GoNotoCurrent-Regular.ttf
+$(FONT_OBJECT): dependencies/assets/GoNotoCurrent_Regular.ttf
 	ld -r -b binary -o $@ $<
 
 $(OUT_DIR)/%.o:
-	$(COMPILER) $(FLAGS) -c -o $@ $(filter %/$*.cpp,$(SOURCES))
+	$(COMPILER) $(FLAGS) -c -o $@ $(subst -,/,$*).cpp
 
 clean:
-	rm -f $(EXE) $(OBJECTS)
+	rm -f $(EXE) $(OBJECTS) $(FONT_OBJECT)
 
 .PHONY: all clean
