@@ -140,7 +140,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 
         if (title.empty())
             title = "Unknown";
-        
+
         if (artist.empty())
             artist = "Unknown";
 
@@ -212,10 +212,10 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 
         if (title.empty())
             title = "Unknown";
-        
+
         if (album.empty())
             album = "Unknown";
-        
+
         if (artist.empty())
             artist = "Unknown";
 

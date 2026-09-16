@@ -11,9 +11,9 @@
 int main(int, char **)
 {
     koji_app::AppState state;
-    state.width       = 1280;
-    state.height      = 720;
-    state.title       = "koji";
+    state.width  = 1280;
+    state.height = 720;
+    state.title  = "koji";
 
     if (!koji_app::initialize(state))
     {
