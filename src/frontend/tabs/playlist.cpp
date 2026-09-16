@@ -58,8 +58,9 @@ void playlistTab(AppState &state, PlayerStatus &status)
 
                 if (ImGui::Button("Edit Playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.edit_window     = true;
-                    status.editor_context = {{}, {}, {status.playlists[index]}};
+                    state.edit_window                        = true;
+                    status.editor_context                    = {};
+                    status.editor_context.playlist_container = getPlaylistSongs(status.playlists[index]);
                 }
 
                 ImGui::EndPopup();

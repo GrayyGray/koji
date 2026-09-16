@@ -54,8 +54,9 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
                     status.queue.erase(status.queue.begin() + index);
                 if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.edit_window     = true;
-                    status.editor_context = {{status.queue[index]}, {}, {}};
+                    state.edit_window                     = true;
+                    status.editor_context                 = {};
+                    status.editor_context.songs_to_append = {status.queue[index]};
                 }
 
                 ImGui::EndPopup();

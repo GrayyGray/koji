@@ -40,9 +40,7 @@ struct SongEntry
 
 struct EditorContext
 {
-    SongEntry              song_to_append   = {};
-    AlbumEntry             album_to_apend   = {};
-    PlaylistEntry          playlist_to_edit = {};
+    std::vector<SongEntry> songs_to_append;
     std::vector<SongEntry> basket_container;
     std::vector<SongEntry> playlist_container;
     SongEntry              basket_selected_song;

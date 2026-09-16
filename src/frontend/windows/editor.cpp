@@ -15,9 +15,9 @@ using namespace koji_app;
 using namespace koji_player;
 using namespace koji_library;
 
-void buttonUp(EditorContext &context)
+void buttonUp(EditorContext &context, float button_size)
 {
-    if (ImGui::ArrowButton("ButtonUp", ImGuiDir_Up))
+    if (ImGui::Button("⮝", ImVec2(button_size, button_size)))
     {
         vector<SongEntry>::iterator selected;
 
@@ -26,85 +26,88 @@ void buttonUp(EditorContext &context)
             selected = find(context.playlist_container.begin(), context.playlist_container.end(), context.playlist_selected_song);
             if (selected != context.playlist_container.end() && selected != context.playlist_container.begin())
             {
-                context.playlist_container.insert(selected - 1, context.playlist_selected_song);
                 context.playlist_container.erase(selected);
+                context.playlist_container.insert(selected - 1, context.playlist_selected_song);
             }
         }
 
-        if (context.basket_selected_song != SongEntry{})
+        else if (context.basket_selected_song != SongEntry{})
         {
             selected = find(context.basket_container.begin(), context.basket_container.end(), context.basket_selected_song);
 
             if (selected != context.basket_container.end() && selected != context.basket_container.begin())
             {
-                context.basket_container.insert(selected - 1, context.basket_selected_song);
                 context.basket_container.erase(selected);
+                context.basket_container.insert(selected - 1, context.basket_selected_song);
             }
         }
     }
 }
 
-void buttonDown(EditorContext &context)
+void buttonDown(EditorContext &context, float button_size)
 {
-    if (ImGui::ArrowButton("ButtonDown", ImGuiDir_Down))
+    if (ImGui::Button("⮟", ImVec2(button_size, button_size)))
     {
         vector<SongEntry>::iterator selected;
 
         if (context.playlist_selected_song != SongEntry{})
         {
             selected = find(context.playlist_container.begin(), context.playlist_container.end(), context.playlist_selected_song);
-            if (selected != context.playlist_container.end() && selected + 1 != context.playlist_container.end())
+            if (selected != context.playlist_container.end() && selected != context.playlist_container.end() + 1)
             {
-                context.playlist_container.insert(selected + 1, context.playlist_selected_song);
                 context.playlist_container.erase(selected);
+                context.playlist_container.insert(selected + 1, context.playlist_selected_song);
             }
         }
 
-        if (context.basket_selected_song != SongEntry{})
+        else if (context.basket_selected_song != SongEntry{})
         {
             selected = find(context.basket_container.begin(), context.basket_container.end(), context.basket_selected_song);
 
-            if (selected != context.basket_container.end() && selected + 1 != context.basket_container.end())
+            if (selected != context.basket_container.end() && selected != context.basket_container.end() + 1)
             {
-                context.basket_container.insert(selected + 1, context.basket_selected_song);
                 context.basket_container.erase(selected);
+                context.basket_container.insert(selected + 1, context.basket_selected_song);
             }
         }
     }
 }
 
-void buttonLeft(EditorContext &context)
+void buttonLeft(EditorContext &context, float button_size)
 {
-    if (ImGui::ArrowButton("ButtonLeft", ImGuiDir_Left))
+    if (ImGui::Button("⮜", ImVec2(button_size, button_size)))
     {
         if (context.playlist_selected_song == SongEntry{} && context.basket_selected_song != SongEntry{})
         {
             vector<SongEntry>::iterator selected = find(context.basket_container.begin(), context.basket_container.end(), context.basket_selected_song);
-            if (selected != context.basket_container.end())
-            {
-                context.playlist_container.push_back(context.basket_selected_song);
-                context.basket_container.erase(selected);
-                context.basket_selected_song = {};
-            }
+
+            if (selected == context.playlist_container.end())
+                return;
+
+            context.basket_container.erase(selected);
+            context.playlist_container.push_back(context.basket_selected_song);
+            context.basket_selected_song = {};
+
+            context.playlist_selected_song = context.playlist_container[context.playlist_container.size() - 1];
         }
     }
 }
 
-void buttonRight(EditorContext &context)
+void buttonRight(EditorContext &context, float button_size)
 {
-    if (ImGui::ArrowButton("ButtonRight", ImGuiDir_Right))
+    if (ImGui::Button("⮞", ImVec2(button_size, button_size)))
     {
         if (context.playlist_selected_song != SongEntry{} && context.basket_selected_song == SongEntry{})
         {
             vector<SongEntry>::iterator selected = find(context.playlist_container.begin(), context.playlist_container.end(), context.playlist_selected_song);
-            if (context.playlist_container.size() == 0 || selected != context.playlist_container.end())
-            {
-                context.basket_container.push_back(context.playlist_selected_song);
-                context.playlist_selected_song = {};
-                context.basket_selected_song = context.basket_container[context.basket_container.size() - 1];
-            }
-            if (selected != context.playlist_container.end())
-                context.playlist_container.erase(selected);
+
+            if (selected == context.playlist_container.end())
+                return;
+
+            context.playlist_container.erase(selected);
+            context.basket_container.push_back(context.playlist_selected_song);
+            context.playlist_selected_song = {};
+            context.basket_selected_song   = context.basket_container[context.basket_container.size() - 1];
         }
     }
 }
@@ -121,8 +124,11 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     if (ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
     {
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
+
         for (const SongEntry &song : status.editor_context.playlist_container)
         {
+            ImGui::TableNextColumn();
+
             if (ImGui::Selectable(song.title.c_str(), true, ImGuiSelectableFlags_None))
             {
                 status.editor_context.basket_selected_song   = {};
@@ -131,9 +137,6 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
 
             if (song == status.editor_context.playlist_selected_song)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
         }
         ImGui::EndTable();
     }
@@ -141,10 +144,10 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
     ImGui::SameLine();
     ImGui::BeginChild("buttons", ImVec2(button_size, table_size_y));
 
-    buttonUp(status.editor_context);
-    buttonDown(status.editor_context);
-    buttonLeft(status.editor_context);
-    buttonRight(status.editor_context);
+    buttonUp(status.editor_context, button_size);
+    buttonDown(status.editor_context, button_size);
+    buttonLeft(status.editor_context, button_size);
+    buttonRight(status.editor_context, button_size);
 
     ImGui::EndChild();
     ImGui::SameLine();
@@ -154,6 +157,8 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
         for (const SongEntry &song : status.editor_context.basket_container)
         {
+            ImGui::TableNextColumn();
+
             if (ImGui::Selectable(song.title.c_str(), true, ImGuiSelectableFlags_None))
             {
                 status.editor_context.playlist_selected_song = {};
@@ -162,9 +167,6 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
 
             if (song == status.editor_context.basket_selected_song)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
         }
         ImGui::EndTable();
     }
@@ -183,7 +185,7 @@ void selectPlaylistMenu(AppState &state, PlayerStatus &status)
         ImGui::TableNextColumn();
 
         if (ImGui::Selectable(status.playlists[index].title.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
-            status.editor_context.playlist_to_edit = status.playlists[index];
+            status.editor_context.playlist_container = getPlaylistSongs(status.playlists[index]);
 
         ImGui::PopID();
     }
@@ -195,22 +197,15 @@ namespace koji_frontend
 
 void editorWindow(AppState &state, PlayerStatus &status)
 {
-    ImGui::SetNextWindowSize(ImVec2(550, 680));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetContentRegionMax().x / 2, ImGui::GetContentRegionMax().y / 2));
     ImGui::Begin("Playlist Editor", &state.edit_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize); // ImGuiChildFlags_NavFlattened,
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 
-    if (status.editor_context.playlist_to_edit == PlaylistEntry{})
-    {
+    if (status.editor_context.playlist_container == vector<SongEntry>{})
         selectPlaylistMenu(state, status);
-        status.editor_context.playlist_container = getPlaylistSongs(status.editor_context.playlist_to_edit);
-    }
     else
-    {
-        if (status.editor_context.playlist_container == vector<SongEntry>{})
-            status.editor_context.playlist_container = getPlaylistSongs(status.editor_context.playlist_to_edit);
         playlistEditorMenu(state, status);
-    }
 
     ImGui::PopItemFlag();
     ImGui::PopItemFlag();
