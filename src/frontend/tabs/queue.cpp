@@ -70,7 +70,7 @@ void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status)
 
             ImGui::TableNextColumn();
             ImGui::Text("%s", status.queue[index].artist.c_str());
-            
+
             ImGui::TableNextColumn();
             ImGui::Text("%s", koji_utils::formatTime(status.queue[index].duration).c_str());
 

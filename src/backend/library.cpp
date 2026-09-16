@@ -111,7 +111,9 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
             continue;
         }
 
-        TagLib::FileRef song_file(song.path().c_str());
+        string song_path = song.path().c_str();
+
+        TagLib::FileRef song_file(song_path.c_str());
 
         int    track_index;
         string artist;
@@ -125,11 +127,24 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
         else
             continue;
 
+        if (title.empty())
+        {
+            size_t last_period = song_path.rfind('.');
+            size_t last_slash  = song_path.rfind('/');
+            title              = song_path.substr(last_slash + 1, last_period - last_slash - 1);
+        }
+
         float duration;
         if (!song_file.isNull() && song_file.audioProperties() != nullptr)
             duration = song_file.audioProperties()->lengthInSeconds();
         else
             continue;
+
+        if (title.empty())
+            title = "Unknown";
+        
+        if (artist.empty())
+            artist = "Unknown";
 
         SongEntry entry = {song.path(), artist, album.title, title, duration};
         tracks.push_back({track_index, entry});
@@ -184,11 +199,27 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
         else
             continue;
 
+        if (title.empty())
+        {
+            size_t last_period = song_path.string().rfind('.');
+            size_t last_slash  = song_path.string().rfind('/');
+            title              = song_path.string().substr(last_slash + 1, last_period - last_slash - 1);
+        }
+
         float duration;
         if (!song_file.isNull() && song_file.audioProperties() != nullptr)
             duration = song_file.audioProperties()->lengthInSeconds();
         else
             continue;
+
+        if (title.empty())
+            title = "Unknown";
+        
+        if (album.empty())
+            album = "Unknown";
+        
+        if (artist.empty())
+            artist = "Unknown";
 
         SongEntry entry = {song_path, artist, album, title, duration};
         songs.push_back(entry);

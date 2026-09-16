@@ -137,10 +137,9 @@ void playlistEditorMenu(AppState &state, PlayerStatus &status)
             }
             ImGui::PopID();
             ++i;
-            
+
             if (song == status.editor_context.playlist_selected_song)
                 ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, ImGui::ColorConvertFloat4ToU32(selected_background_color));
-            
         }
         ImGui::EndTable();
     }
