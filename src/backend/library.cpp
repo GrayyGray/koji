@@ -88,7 +88,7 @@ vector<PlaylistEntry> getPlaylists()
         }
 
         string            relative_album_path_string = filesystem::relative(playlist.path(), playlists_directory).string();
-        string::size_type dot_positon                = relative_album_path_string.find('.');
+        string::size_type dot_positon                = relative_album_path_string.rfind('.');
         string            playlist_title             = relative_album_path_string.substr(0, dot_positon);
 
         PlaylistEntry entry = {playlist.path(), playlist_title};

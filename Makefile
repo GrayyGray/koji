@@ -22,7 +22,7 @@ all: $(EXE)
 $(EXE): $(OBJECTS) $(FONT_OBJECT)
 	$(COMPILER) $(OBJECTS) $(FONT_OBJECT) -o $(EXE) $(LIBS)
 
-$(FONT_OBJECT): src/assets/GoNotoCurrent-Regular.ttf
+$(FONT_OBJECT): dependencies/assets/GoNotoCurrent-Regular.ttf
 	ld -r -b binary -o $@ $<
 
 $(OUT_DIR)/%.o:
