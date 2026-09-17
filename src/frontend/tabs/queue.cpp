@@ -8,6 +8,12 @@
 
 using namespace std;
 
+namespace koji::frontend::tabs
+{
+    
+} // namespace koji::frontend::tabs
+
+
 namespace koji_frontend
 {
 

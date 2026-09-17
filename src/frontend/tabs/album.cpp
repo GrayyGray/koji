@@ -3,7 +3,6 @@
 #include "../../backend"
 #include "../../frontend/ui.h"
 #include "imgui.h"
-#include "tab.h"
 #include "tabs.h"
 
 using namespace std;
