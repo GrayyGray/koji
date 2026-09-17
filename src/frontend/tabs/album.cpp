@@ -1,24 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "../../backend"
-#include "../../frontend/ui.h"
+#include "../../backend/app.h"
+#include "../../backend/library/albums.h"
 #include "imgui.h"
 #include "tabs.h"
 
 using namespace std;
-
+using namespace koji::backend::app;
+using namespace koji::backend::library;
 
 namespace koji::frontend::tabs
 {
-    
-} // namespace koji::frontend::tabs
 
-namespace koji_frontend
+void albumTab(AppState &state)
 {
-
-void albumTab(AppState &state, PlayerStatus &status)
-{
-    if (beginTab("Albums"))
+    if (internal::beginTab("Albums"))
     {
         ImGui::BeginTable("albumTable", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 
@@ -32,19 +28,19 @@ void albumTab(AppState &state, PlayerStatus &status)
         ImGui::PopStyleColor();
         ImGui::PopItemFlag();
 
-        for (int index = 0; index < status.albums.size(); index++)
+        for (int index = 0; index < state.player_context.albums.size(); index++)
         {
             ImGui::PushID(index);
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
 
-            if (ImGui::Selectable(status.albums[index].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
+            if (ImGui::Selectable(state.player_context.albums[index].artist.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
             {
-                if (!state.io->KeyShift && !status.queue.empty())
-                    status.queue.clear();
+                if (!state.io->KeyShift && !state.player_context.queue.empty())
+                    state.player_context.queue.clear();
                 vector<SongEntry> songs;
-                songs = getAlbumSongs(status.albums[index]);
-                addSongsToQueue(status, songs);
+                songs = getAlbumSongs(state.player_context.albums[index]);
+                addSongsToQueue(state, songs);
             }
 
             if (ImGui::BeginPopupContextItem())
@@ -54,27 +50,27 @@ void albumTab(AppState &state, PlayerStatus &status)
                 if (ImGui::Button("Append to queue", ImVec2(avalible_width, 0)))
                 {
                     vector<SongEntry> songs;
-                    songs = getAlbumSongs(status.albums[index]);
-                    addSongsToQueue(status, songs);
+                    songs = getAlbumSongs(state.player_context.albums[index]);
+                    addSongsToQueue(state, songs);
                 }
                 if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.edit_window                     = true;
-                    status.editor_context                 = {};
-                    status.editor_context.songs_to_append = getAlbumSongs(status.albums[index]);
+                    state.editor_context                 = {};
+                    state.editor_context.edit_window     = true;
+                    state.editor_context.songs_to_append = getAlbumSongs(state.player_context.albums[index]);
                 }
 
                 ImGui::EndPopup();
             }
 
             ImGui::TableNextColumn();
-            ImGui::Text("%s", status.albums[index].title.c_str());
+            ImGui::Text("%s", state.player_context.albums[index].title.c_str());
 
             ImGui::PopID();
         }
 
         ImGui::EndTable();
-        endTab();
+        internal::endTab();
     }
 }
-} // namespace koji_frontend
+} // namespace koji::frontend::tabs

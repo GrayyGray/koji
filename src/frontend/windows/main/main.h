@@ -6,6 +6,5 @@
 namespace koji::frontend::windows::main
 {
 void beginMainWindow(const koji::backend::app::AppState &state);
-void endMainWindow(const  koji::backend::app::AppState &state);
+void endMainWindow(const koji::backend::app::AppState &state);
 } // namespace koji::frontend::windows::main
-

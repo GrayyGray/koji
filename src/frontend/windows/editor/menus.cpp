@@ -2,12 +2,12 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "menus.h"
-#include "editor.h"
-#include "../../../backend/library/entries.h"
-#include "../../../backend/utils/color.h"
 #include "../../../backend/app.h"
+#include "../../../backend/library/entries.h"
 #include "../../../backend/library/playlists.h"
+#include "../../../backend/utils/color.h"
 #include "buttons.h"
+#include "editor.h"
 #include "imgui.h"
 
 using namespace std;
@@ -37,7 +37,6 @@ void selectPlaylistMenu(AppState &state)
         ImGui::PopID();
     }
     ImGui::EndTable();
-    
 }
 
 void playlistEditorMenu(AppState &state)

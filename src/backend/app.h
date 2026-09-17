@@ -6,9 +6,9 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <SDL3/SDL.h>
 #include <mpv/client.h>
 #include "../backend/library/entries.h"
-#include <SDL3/SDL.h>
 #include "imgui.h"
 
 namespace koji::backend::app
@@ -22,7 +22,7 @@ enum class RepeatMode
 
 struct EditorContext
 {
-    bool          edit_window = false;
+    bool                                           edit_window = false;
     std::vector<koji::backend::library::SongEntry> songs_to_append;
     std::vector<koji::backend::library::SongEntry> basket_container;
     std::vector<koji::backend::library::SongEntry> playlist_container;
@@ -44,8 +44,8 @@ struct PlayerContext
     std::vector<koji::backend::library::SongEntry>     queue;
     std::vector<koji::backend::library::SongEntry>     unshuffled_queue;
 
-    std::mt19937  random_engine{std::random_device{}()};
-    mpv_handle   *mpv_context    = nullptr;
+    std::mt19937 random_engine{std::random_device{}()};
+    mpv_handle  *mpv_context = nullptr;
 };
 
 struct AppState
@@ -59,7 +59,6 @@ struct AppState
     EditorContext editor_context;
     PlayerContext player_context;
 };
-
 
 bool initialize(AppState &state);
 
@@ -79,4 +78,3 @@ void toggleRepeatMode(RepeatMode &repeat_mode);
 void addSongsToQueue(AppState &state, std::vector<koji::backend::library::SongEntry> &songs);
 
 } // namespace koji::backend::app
-

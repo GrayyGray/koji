@@ -1,23 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#pragma once
 
+#include "app.h"
+#include <algorithm>
 #include <filesystem>
+#include <iterator>
 #include <random>
 #include <string>
 #include <vector>
+#include <SDL3/SDL.h>
 #include <mpv/client.h>
-#include "../backend/library/entries.h"
 #include "../backend/library/albums.h"
+#include "../backend/library/entries.h"
 #include "../backend/library/playlists.h"
-#include <SDL3/SDL.h>
 #include "imgui.h"
-#include <algorithm>
-#include <SDL3/SDL.h>
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
-#include <iterator>
-#include "app.h"
 
 // NOLINTBEGIN(readability-identifier-naming)
 extern const unsigned char _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start[];
@@ -29,6 +27,89 @@ using namespace koji::backend::library;
 
 namespace koji::backend::app
 {
+
+void updateCurrentSong(AppState &state)
+{
+    state.player_context.paused = false;
+    updatePause(state);
+    const char *play_command[] = {"loadfile", state.player_context.current_song.path.c_str(), "replace", nullptr};
+    mpv_command(state.player_context.mpv_context, play_command);
+}
+
+void updatePause(AppState &state)
+{
+    if (state.player_context.paused)
+        mpv_set_property_string(state.player_context.mpv_context, "pause", "yes");
+    else
+        mpv_set_property_string(state.player_context.mpv_context, "pause", "no");
+}
+
+void updateVolume(AppState &state, const int level = 0) { mpv_set_property_string(state.player_context.mpv_context, "volume", to_string(state.player_context.volume + level).c_str()); }
+
+void stopSong(AppState &state)
+{
+    state.player_context.current_song = {};
+    state.player_context.paused       = true;
+    updatePause(state);
+    mpv_command_string(state.player_context.mpv_context, "stop");
+}
+
+void togglePause(AppState &state)
+{
+    state.player_context.paused = !state.player_context.paused;
+    updatePause(state);
+}
+
+void toggleShuffle(AppState &state)
+{
+    state.player_context.shuffle = !state.player_context.shuffle;
+
+    if (state.player_context.shuffle)
+    {
+        state.player_context.unshuffled_queue = state.player_context.queue;
+        state.player_context.random_engine.seed(random_device{}());
+        ranges::shuffle(state.player_context.queue, state.player_context.random_engine);
+    }
+    else
+    {
+        state.player_context.queue = state.player_context.unshuffled_queue;
+        state.player_context.unshuffled_queue.clear();
+    }
+}
+
+void toggleRepeatMode(RepeatMode &repeat_mode)
+{
+    if (repeat_mode == RepeatMode::Off)
+    {
+        repeat_mode = RepeatMode::All;
+    }
+    else if (repeat_mode == RepeatMode::All)
+    {
+        repeat_mode = RepeatMode::Track;
+    }
+    else if (repeat_mode == RepeatMode::Track)
+    {
+        repeat_mode = RepeatMode::Off;
+    }
+}
+
+void addSongsToQueue(AppState &state, vector<SongEntry> &songs)
+{
+    if (state.player_context.shuffle)
+    {
+        state.player_context.unshuffled_queue.insert(state.player_context.unshuffled_queue.end(), songs.begin(), songs.end());
+        ranges::shuffle(songs, state.player_context.random_engine);
+    }
+
+    if (state.player_context.queue.empty())
+    {
+        state.player_context.current_song = songs[0];
+        updateCurrentSong(state);
+    }
+
+    state.player_context.queue.insert(state.player_context.queue.end(), songs.begin(), songs.end());
+}
+
 bool initialize(AppState &state)
 {
     if (!SDL_Init(SDL_INIT_VIDEO))
@@ -105,20 +186,19 @@ bool initialize(AppState &state)
     state.player_context.albums    = getAlbums();
     state.player_context.playlists = getPlaylists();
 
-
     return true;
 }
 
 void cycleSong(AppState &state)
 {
-    int song_index;
+    int                               song_index;
     vector<SongEntry>::const_iterator iterator = find(state.player_context.queue.begin(), state.player_context.queue.end(), state.player_context.current_song);
 
     if (iterator == state.player_context.queue.end())
         song_index = -1;
     else
         song_index = distance(state.player_context.queue.cbegin(), iterator);
-    
+
     if (song_index + 1 >= state.player_context.queue.size())
         state.player_context.current_song = state.player_context.queue[0];
     else
@@ -156,7 +236,6 @@ bool keyCycle(AppState &state)
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
         stopSong(state);
-        state.player_context.current_song = {};
 
     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
         togglePause(state);
@@ -193,7 +272,6 @@ bool pollEvents(AppState &state)
     if (SDL_GetWindowFlags(state.window) & SDL_WINDOW_MINIMIZED)
         SDL_Delay(10);
 
-
     if (!songCycle(state))
         return false;
 
@@ -216,88 +294,4 @@ void cleanup(AppState &state)
     SDL_DestroyWindow(state.window);
     SDL_Quit();
 }
-
-void updateCurrentSong(AppState &state)
-{
-    state.player_context.paused = false;
-    updatePause(state);
-    const char *play_command[] = {"loadfile", state.player_context.current_song.path.c_str(), "replace", nullptr};
-    mpv_command(state.player_context.mpv_context, play_command);
-}
-
-void updatePause(AppState &state)
-{
-    if (state.player_context.paused)
-        mpv_set_property_string(state.player_context.mpv_context, "pause", "yes");
-    else
-        mpv_set_property_string(state.player_context.mpv_context, "pause", "no");
-}
-
-void updateVolume(AppState &state, const int level = 0)
-{ 
-    mpv_set_property_string(state.player_context.mpv_context, "volume", to_string(state.player_context.volume + level).c_str()); 
-}
-
-void stopSong(AppState &state)
-{
-    state.player_context.paused = true;
-    updatePause(state);
-    mpv_command_string(state.player_context.mpv_context, "stop");
-}
-
-void togglePause(AppState &state)
-{
-    state.player_context.paused = !state.player_context.paused;
-    updatePause(state);
-}
-
-void toggleShuffle(AppState &state)
-{
-    state.player_context.shuffle = !state.player_context.shuffle;
-
-    if (state.player_context.shuffle)
-    {
-        state.player_context.unshuffled_queue = state.player_context.queue;
-        state.player_context.random_engine.seed(random_device{}());
-        ranges::shuffle(state.player_context.queue, state.player_context.random_engine);
-    }
-    else
-    {
-        state.player_context.queue = state.player_context.unshuffled_queue;
-        state.player_context.unshuffled_queue.clear();
-    }
-}
-
-void toggleRepeatMode(RepeatMode &repeat_mode)
-{
-    if (repeat_mode == RepeatMode::Off)
-    {
-        repeat_mode = RepeatMode::All;
-    }
-    else if (repeat_mode == RepeatMode::All)
-    {
-        repeat_mode = RepeatMode::Track;
-    }
-    else if (repeat_mode == RepeatMode::Track)
-    {
-        repeat_mode = RepeatMode::Off;
-    }
-}
-
-void addSongsToQueue(AppState &state, vector<SongEntry> &songs)
-{
-    if (state.player_context.shuffle)
-    {
-        state.player_context.unshuffled_queue.insert(state.player_context.unshuffled_queue.end(), songs.begin(), songs.end());
-        ranges::shuffle(songs, state.player_context.random_engine);
-    }
-
-    if (state.player_context.queue.empty())
-    {
-        state.player_context.current_song = songs[0];
-        updateCurrentSong(state);
-    }
-
-    state.player_context.queue.insert(state.player_context.queue.end(), songs.begin(), songs.end());
-}
-} // namespace app
+} // namespace koji::backend::app

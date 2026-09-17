@@ -6,8 +6,8 @@
 #include <optional>
 #include <tuple>
 #include <taglib/fileref.h>
-#include "playlists.h"
 #include "../../backend/utils/filesystem.h"
+#include "playlists.h"
 
 using namespace std;
 using namespace koji::backend::utils;

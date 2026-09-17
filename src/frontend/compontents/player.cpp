@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
+#include "player.h"
 #include <SDL3/SDL.h>
-#include "../../backend/utils/time.h"
 #include "../..//backend/library/entries.h"
 #include "../../backend/app.h"
+#include "../../backend/utils/time.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
-#include "player.h"
 
 using namespace koji::backend::library;
 using namespace koji::backend::app;

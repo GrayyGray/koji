@@ -23,7 +23,7 @@ void beginMainWindow(const AppState &state)
     ImGui::Begin("mainWindow", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiTableFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus);
 }
 
-void endMainWindow(const  AppState &state)
+void endMainWindow(const AppState &state)
 {
     ImGui::PopStyleColor();
     ImGui::End();
@@ -36,4 +36,3 @@ void endMainWindow(const  AppState &state)
     SDL_RenderPresent(state.renderer);
 }
 } // namespace koji::frontend::windows::main
-

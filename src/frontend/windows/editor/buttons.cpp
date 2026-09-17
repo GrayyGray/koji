@@ -2,10 +2,10 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "buttons.h"
-#include "../../../backend/library/entries.h"
-#include "../../../backend/app.h"
 #include <algorithm>
 #include <vector>
+#include "../../../backend/app.h"
+#include "../../../backend/library/entries.h"
 #include "imgui.h"
 
 using namespace std;
@@ -123,6 +123,6 @@ void buttonCancel(AppState &state, float button_size)
     if (!ImGui::Button("Cancel", ImVec2(button_size, button_size)))
         return;
 
-    state.editor_context.edit_window     = false;
+    state.editor_context.edit_window = false;
 }
 } // namespace koji::frontend::windows::editor

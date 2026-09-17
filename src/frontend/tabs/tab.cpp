@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "tabs.h"
 #include "imgui.h"
+#include "tabs.h"
 
 namespace koji::frontend::tabs::internal
 {

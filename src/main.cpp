@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "backend/app.h"
 #include "frontend/windows/main/main.h"
+#include "backend/app.h"
 #include "frontend/compontents/player.h"
-#include "imgui.h"
-#include "frontend/windows/editor/editor.h"
 #include "frontend/tabs/tabs.h"
+#include "frontend/windows/editor/editor.h"
+#include "imgui.h"
 using namespace koji;
 using namespace backend;
 using namespace frontend;
-
 
 int main(int, char **)
 {

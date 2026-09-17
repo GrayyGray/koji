@@ -6,5 +6,5 @@
 
 namespace koji::backend::utils
 {
-ImVec4      darkenColor(const ImVec4 &color, float amount);
+ImVec4 darkenColor(const ImVec4 &color, float amount);
 } // namespace koji::backend::utils

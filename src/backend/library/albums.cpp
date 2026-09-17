@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "albums.h"
 #include <fstream>
 #include <iostream>
 #include <optional>
 #include <tuple>
 #include <taglib/fileref.h>
-#include "albums.h"
 #include "../../backend/utils/filesystem.h"
 
 using namespace std;

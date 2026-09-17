@@ -8,5 +8,5 @@
 namespace koji::backend::library
 {
 std::vector<AlbumEntry> getAlbums();
-std::vector<SongEntry> getAlbumSongs(const AlbumEntry &album);
+std::vector<SongEntry>  getAlbumSongs(const AlbumEntry &album);
 } // namespace koji::backend::library

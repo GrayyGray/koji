@@ -2,19 +2,18 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "editor.h"
-#include "../../../backend/library/entries.h"
-#include "../../../backend/app.h"
 #include <algorithm>
 #include <tuple>
 #include <vector>
 #include <stdlib.h>
+#include "../../../backend/app.h"
+#include "../../../backend/library/entries.h"
 #include "imgui.h"
 #include "menus.h"
 
 using namespace std;
 using namespace koji::backend::app;
 using namespace koji::backend::library;
-
 
 namespace koji::frontend::windows::editor
 {
@@ -35,4 +34,3 @@ void editorWindow(AppState &state)
     ImGui::End();
 }
 } // namespace koji::frontend::windows::editor
-
