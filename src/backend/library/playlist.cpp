@@ -108,4 +108,10 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
     }
     return songs;
 }
+
+void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> playlist)
+{
+    
+}
+
 } // namespace koji::backend::library

@@ -6,6 +6,7 @@
 #include <vector>
 #include "../../../backend/app.h"
 #include "../../../backend/library/entries.h"
+#include "../../../backend/library/playlists.h"
 #include "imgui.h"
 
 using namespace std;
@@ -116,6 +117,8 @@ void buttonSave(AppState &state, float button_size)
 {
     if (!ImGui::Button("Save", ImVec2(button_size, button_size)))
         return;
+
+    savePlaylist(state.editor_context.playlist, state.editor_context.playlist_container);
 }
 
 void buttonCancel(AppState &state, float button_size)

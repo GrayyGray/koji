@@ -29,6 +29,7 @@ void selectPlaylistMenu(AppState &state)
 
         if (ImGui::Selectable(state.player_context.playlists[index].title.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
         {
+            state.editor_context.playlist = state.player_context.playlists[index];
             state.editor_context.playlist_container = getPlaylistSongs(state.player_context.playlists[index]);
             state.editor_context.playlist_container.reserve(state.editor_context.playlist_container.size() + state.editor_context.songs_to_append.size());
             for (const SongEntry &song : state.editor_context.songs_to_append)

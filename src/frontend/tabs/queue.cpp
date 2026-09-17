@@ -51,9 +51,7 @@ void queueTab(AppState &state)
                     state.player_context.queue.erase(state.player_context.queue.begin() + index);
                 if (ImGui::Button("Add to playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.editor_context             = {};
                     state.editor_context.edit_window = true;
-
                     state.editor_context.songs_to_append = {state.player_context.queue[index]};
                 }
 
