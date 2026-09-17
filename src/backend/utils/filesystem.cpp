@@ -14,6 +14,9 @@ filesystem::path xdgConfigDir()
     if (xdg_config && xdg_config[0] != '\0')
         config_path = filesystem::path(xdg_config);
 
+    if (const char *home = std::getenv("HOME"); home && home[0] != '\0')
+        config_path = std::filesystem::path(home) / ".config";
+
     return config_path;
 }
 } // namespace koji::backend::utils
