@@ -7,7 +7,7 @@
 #include "../../../backend/utils/color.h"
 #include "../../../backend/app.h"
 #include "../../../backend/library/playlists.h"
-
+#include "buttons.h"
 #include "imgui.h"
 
 using namespace std;

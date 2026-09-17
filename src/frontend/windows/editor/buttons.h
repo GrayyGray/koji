@@ -9,4 +9,6 @@ void buttonUp(koji::backend::app::EditorContext &context, float button_size);
 void buttonDown(koji::backend::app::EditorContext &context, float button_size);
 void buttonLeft(koji::backend::app::EditorContext &context, float button_size);
 void buttonRight(koji::backend::app::EditorContext &context, float button_size); 
+void buttonSave(koji::backend::app::AppState &state, float button_size);
+void buttonCancel(koji::backend::app::AppState &state, float button_size);
 } // namespace koji::frontend::windows::editor

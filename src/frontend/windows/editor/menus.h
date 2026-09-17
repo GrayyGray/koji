@@ -5,8 +5,6 @@
 
 namespace koji::frontend::windows::editor
 {
-void buttonUp(koji::backend::app::EditorContext &context, float button_size);
-void buttonDown(koji::backend::app::EditorContext &context, float button_size);
-void buttonLeft(koji::backend::app::EditorContext &context, float button_size);
-void buttonRight(koji::backend::app::EditorContext &context, float button_size); 
+void selectPlaylistMenu(koji::backend::app::AppState &state);
+void playlistEditorMenu(koji::backend::app::AppState &state);
 } // namespace koji::frontend::windows::editor

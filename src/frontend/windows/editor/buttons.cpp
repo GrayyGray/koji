@@ -12,6 +12,8 @@ using namespace std;
 using namespace koji::backend::app;
 using namespace koji::backend::library;
 
+namespace koji::frontend::windows::editor
+{
 void buttonUp(EditorContext &context, float button_size)
 {
     if (!ImGui::Button("⮝", ImVec2(button_size, button_size)))
@@ -109,3 +111,18 @@ void buttonRight(EditorContext &context, float button_size)
 
     context.basket_selected_song = context.basket_container[context.basket_container.size() - 1];
 }
+
+void buttonSave(AppState &state, float button_size)
+{
+    if (!ImGui::Button("Save", ImVec2(button_size, button_size)))
+        return;
+}
+
+void buttonCancel(AppState &state, float button_size)
+{
+    if (!ImGui::Button("Cancel", ImVec2(button_size, button_size)))
+        return;
+
+    state.editor_context.edit_window     = false;
+}
+} // namespace koji::frontend::windows::editor

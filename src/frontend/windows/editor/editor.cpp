@@ -9,7 +9,7 @@
 #include <vector>
 #include <stdlib.h>
 #include "imgui.h"
-#include ""
+#include "menus.h"
 
 using namespace std;
 using namespace koji::backend::app;
@@ -35,21 +35,4 @@ void editorWindow(AppState &state)
     ImGui::End();
 }
 } // namespace koji::frontend::windows::editor
-
-
-void buttonSave(AppState &state, PlayerStatus &status, float button_size)
-{
-    if (!ImGui::Button("Save", ImVec2(button_size, button_size)))
-        return;
-}
-
-void buttonCancel(AppState &state, PlayerStatus &status, float button_size)
-{
-    if (!ImGui::Button("Cancel", ImVec2(button_size, button_size)))
-        return;
-
-    state.edit_window     = false;
-    status.editor_context = {};
-}
-
 
