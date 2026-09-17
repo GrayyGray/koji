@@ -44,7 +44,11 @@ void updatePause(AppState &state)
         mpv_set_property_string(state.player_context.mpv_context, "pause", "no");
 }
 
-void updateVolume(AppState &state, const int level = 0) { mpv_set_property_string(state.player_context.mpv_context, "volume", to_string(state.player_context.volume + level).c_str()); }
+void updateVolume(AppState &state, const int level = 0) 
+{ 
+    state.player_context.volume += level;
+    mpv_set_property_string(state.player_context.mpv_context, "volume", to_string(state.player_context.volume).c_str()); 
+}
 
 void stopSong(AppState &state)
 {
