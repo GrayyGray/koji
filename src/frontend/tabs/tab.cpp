@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "tab.h"
+#include "tabs.h"
 #include "imgui.h"
 
+namespace koji::frontend::tabs::internal
+{
 bool beginTab(const char *label)
 {
     if (!ImGui::BeginTabItem(label, nullptr, ImGuiTabItemFlags_NoArrowNav))
@@ -22,3 +24,4 @@ void endTab()
     ImGui::EndChild();
     ImGui::EndTabItem();
 }
+} // namespace koji::frontend::tabs::internal

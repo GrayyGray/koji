@@ -1,18 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "../../backend/library.h"
 #include "../../backend/utils/color.h"
 #include "../../backend/utils/time.h"
 #include "../../frontend/ui.h"
 #include "imgui.h"
-#include "tab.h"
 #include "tabs.h"
 
 using namespace std;
-using namespace koji;
-using namespace koji_app;
-using namespace koji_player;
-using namespace koji_library;
 
 namespace koji_frontend
 {

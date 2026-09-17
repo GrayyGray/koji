@@ -3,11 +3,16 @@
 #pragma once
 
 #include "../../backend/app.h"
-#include "../../backend/player.h"
 
-namespace koji_frontend
+namespace koji::frontend::tabs
 {
-void queueTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
-void albumTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
-void playlistTab(koji_app::AppState &state, koji_player::PlayerStatus &status);
-} // namespace koji_frontend
+void queueTab(koji::backend::app::AppState &state);
+void albumTab(koji::backend::app::AppState &state);
+void playlistTab(koji::backend::app::AppState &state);
+} // namespace koji::frontend::tabs
+
+namespace koji::frontend::tabs::internal
+{
+bool beginTab(const char *label);
+void endTab();
+} // namespace koji::frontend::tabs::internal
