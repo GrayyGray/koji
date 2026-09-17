@@ -22,9 +22,8 @@ enum class RepeatMode
 
 struct EditorContext
 {
-    koji::backend::library::PlaylistEntry playlist;
+    koji::backend::library::PlaylistEntry          playlist;
     bool                                           edit_window = false;
-    std::vector<koji::backend::library::SongEntry> songs_to_append;
     std::vector<koji::backend::library::SongEntry> basket_container;
     std::vector<koji::backend::library::SongEntry> playlist_container;
     koji::backend::library::SongEntry              basket_selected_song;
