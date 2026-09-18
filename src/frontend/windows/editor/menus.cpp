@@ -9,6 +9,7 @@
 #include "buttons.h"
 #include "editor.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 using namespace std;
 using namespace koji::backend::app;
@@ -42,10 +43,12 @@ void playlistEditorMenu(AppState &state)
     const float  margin                    = 4.0f;
     const float  button_size               = 48.0f;
     const float  table_size_y              = ImGui::GetContentRegionAvail().y;
-    const float  table_size_x              = ImGui::GetContentRegionAvail().x / 2 - (button_size);
+    const float  table_size_x              = ImGui::GetWindowSize().x / 2 - (button_size);
     const ImVec4 selected_background_color = koji::backend::utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
 
     ImGui::BeginChild("playlistChild", ImVec2(table_size_x, table_size_y));
+    ImGui::Text("Playlist");
+    ImGui::Separator();
     if (ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
     {
         int i = 0;
@@ -70,6 +73,8 @@ void playlistEditorMenu(AppState &state)
     }
     ImGui::EndChild();
     ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
     ImGui::BeginChild("buttons", ImVec2(button_size, table_size_y), ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     buttonUp(state.editor_context, button_size);
@@ -92,7 +97,11 @@ void playlistEditorMenu(AppState &state)
 
     ImGui::EndChild();
     ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
     ImGui::BeginChild("basketChild", ImVec2(table_size_x, table_size_y));
+    ImGui::Text("Removal Basket");
+    ImGui::Separator();
     if (ImGui::BeginTable("basketTable", 1, ImGuiTableFlags_None, ImVec2(0, 0)))
     {
         int i = 0;

@@ -3,6 +3,12 @@
 Koji is a music player built with C++ and the ImGui library. 
 It uses mpv for audio playback and SDL3 for window management. 
 
+## Quick Start
+
+- **Installation:** ```git clone https://github.com/GrayyGray/koji.git && make all```
+- **Importing Files:** Follow the formatting in [File Formatting](#file-formatting)
+- **Running:** ```./koji```
+
 ## Overview
 
 - **Song Queue Tab**: Displays the current song queue and allows users to select songs to play.
@@ -39,34 +45,34 @@ Songs can be added to the queue by selecting albums and playlists in the respect
 Shift clicking appends. 
 Regular clicking replaces.
 
-## Installation
-
-```git clone https://github.com/GrayyGray/koji.git && make all && ./koji```
-
-
 ## File Formatting
 
 Koji requires the following file formats for songs and playlists:
 
-### Songs
+### Albums
 
-Songs should be stored in the following directory structure: `~/.config/koji/albums/<artist>/<album>/<title>.<ext>`. As an example: `~/.config/koji/albums/Grimes/Visions/Infinite Love without Fulfilment.mp3`
+Albums should be stored in the following directory structure: `~/.config/koji/albums/<artist>/<album>/<title>.<ext>`. As an example: `~/.config/koji/albums/Grimes/Visions/Infinite Love without Fulfilment.mp3`  
 
-Each song in the album needs to contain all of the following metadata tags:
-- track
-- title
-- artist
+**Optional Metadata:**
+
+For each song file in the album to sort and display them appropriately they should have the following ID3 metadata tags:
+
+- **track**: The tracks number.
+- **title**: The songs title.
+- **artist**: The artists name.
 
 ### Playlists
 
-Playlists should be stored as m3u's in the directory `~/.config/koji/playlists` with the following format: `~/.config/koji/playlists/<playlist_title>.m3u`
+Playlists should be stored as `.m3u` files in the directory structure: `~/.config/koji/playlists/<playlist-name>/<playlist-title>.m3u`
 
-Each line in the playlist file should contain the path to a song in the directory `~/.config/koji/playlists/songs` with the following format: `<title>.<ext>`
+Each line in the playlist file should contain the path to a song ideally in the directory `~/.config/koji/playlists/<playlist-name>/` with the following format of: `<title>.<ext>`
+Otherwise you can use direct paths to files in albums or elsewhere.
 
-Each song in the playlist needs to contain all of the following metadata tags:
-- title
-- album
-- artist
+For each song file in the playlist to display them appropriately they should have the following ID3 metadata tags:
+
+- **title**: The songs title.
+- **album**: The albums name.
+- **artist**: The artists name.
 
 ## Screenshots
 

@@ -19,8 +19,9 @@ namespace koji::frontend::windows::editor
 {
 void editorWindow(AppState &state)
 {
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetContentRegionMax().x / 2, ImGui::GetContentRegionMax().y / 2));
-    ImGui::Begin("Playlist Editor", &state.editor_context.edit_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize); // ImGuiChildFlags_NavFlattened,
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y));
+    ImGui::Begin("Playlist Editor", &state.editor_context.edit_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove); // ImGuiChildFlags_NavFlattened,
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 
