@@ -2,15 +2,16 @@ COMPILER = clang++
 
 EXE = koji
 OUT_DIR = out
-BACKEND_DIRECTORY = dependencies/imgui
+
+IMGUI_DIR = dependencies/imgui
 
 SOURCES = $(shell find src -name '*.cpp')
-SOURCES += $(BACKEND_DIRECTORY)/imgui.cpp $(BACKEND_DIRECTORY)/imgui_draw.cpp $(BACKEND_DIRECTORY)/imgui_tables.cpp $(BACKEND_DIRECTORY)/imgui_widgets.cpp
-SOURCES += $(BACKEND_DIRECTORY)/backends/imgui_impl_sdl3.cpp $(BACKEND_DIRECTORY)/backends/imgui_impl_sdlrenderer3.cpp
-SOURCES += $(BACKEND_DIRECTORY)/misc/cpp/imgui_stdlib.cpp
+SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl3.cpp $(IMGUI_DIR)/backends/imgui_impl_sdlrenderer3.cpp
+SOURCES += $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp
 
 OBJECTS = $(SOURCES:%.cpp=$(OUT_DIR)/%.o)
-FLAGS = -std=c++20 -I$(BACKEND_DIRECTORY) -I$(BACKEND_DIRECTORY)/backends -g -Wall -Wformat $(shell pkg-config --cflags sdl3 mpv taglib) 
+FLAGS = -std=c++20 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -g -Wall -Wformat $(shell pkg-config --cflags sdl3 mpv taglib) 
 LIBS = -ldl $(shell pkg-config --libs sdl3 mpv taglib) 
 FONT_OBJECT = $(OUT_DIR)/dependencies/assets/GoNotoCurrent_Regular.o
 
