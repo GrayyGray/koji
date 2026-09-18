@@ -3,12 +3,14 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "entries.h"
 
 namespace koji::backend::library
 {
 std::vector<PlaylistEntry> getPlaylists();
 std::vector<SongEntry>     getPlaylistSongs(const PlaylistEntry &playlist);
-void                       duplicatePlaylist(const PlaylistEntry &entry);
+bool                       renamePlaylist(const PlaylistEntry &entry, const std::string &name);
 void                       savePlaylist(const PlaylistEntry &entry, const std::vector<SongEntry> &playlist);
+bool                       duplicatePlaylist(const PlaylistEntry &entry);
 } // namespace koji::backend::library
