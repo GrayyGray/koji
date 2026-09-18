@@ -29,10 +29,10 @@ vector<PlaylistEntry> getPlaylists()
         if (!filesystem::is_directory(folder))
             continue;
 
-        const filesystem::path m3u = folder.path() / (folder.path().filename().string() + ".m3u");
-        const string title = m3u.stem().string();
-        const PlaylistEntry entry = {m3u, title};
-        
+        const filesystem::path m3u   = folder.path() / (folder.path().filename().string() + ".m3u");
+        const string           title = m3u.stem().string();
+        const PlaylistEntry    entry = {m3u, title};
+
         playlists.push_back(entry);
     }
 
@@ -53,9 +53,9 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
     string song;
     while (getline(playlist_file, song))
     {
-        string title;
-        string album;
-        string artist;
+        string           title;
+        string           album;
+        string           artist;
         filesystem::path song_path;
         if (filesystem::exists(songs_directory / song))
             song_path = songs_directory / song;
@@ -75,7 +75,7 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 
         if (title.empty())
         {
-            title       = song_path.stem().string();
+            title = song_path.stem().string();
         }
 
         float duration;
@@ -99,7 +99,9 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
     return songs;
 }
 
-void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist) 
+void duplicatePlaylist(const PlaylistEntry &entry) {}
+
+void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist)
 {
     filesystem::path xdg_config_directory = xdgConfigDir();
     if (xdg_config_directory.empty())
@@ -115,7 +117,7 @@ void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist)
 
     filesystem::path songs_directory = entry.path.parent_path();
 
-    for (const auto &song : playlist) 
+    for (const auto &song : playlist)
     {
         const string song_filename = song.path.filename().string();
         if (filesystem::exists(songs_directory / song_filename))
@@ -128,4 +130,3 @@ void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist)
 }
 
 } // namespace koji::backend::library
-

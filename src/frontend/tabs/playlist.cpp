@@ -53,12 +53,20 @@ void playlistTab(AppState &state)
                     addSongsToQueue(state, songs);
                 }
 
+                if (ImGui::Button("Rename Playlist", ImVec2(avalible_width, 0)))
+                {
+                }
+
                 if (ImGui::Button("Edit Playlist", ImVec2(avalible_width, 0)))
                 {
                     state.editor_context.edit_window        = true;
-                    state.editor_context.playlist = {state.player_context.playlists[index]};
+                    state.editor_context.playlist           = {state.player_context.playlists[index]};
                     state.editor_context.basket_container   = {};
                     state.editor_context.playlist_container = getPlaylistSongs(state.player_context.playlists[index]);
+                }
+
+                if (ImGui::Button("Duplicate Playlist", ImVec2(avalible_width, 0)))
+                {
                 }
 
                 ImGui::EndPopup();

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 git switch main &&
 git fetch origin &&
 git rebase origin/development &&

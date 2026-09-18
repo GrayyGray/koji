@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "albums.h"
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <taglib/fileref.h>
 #include "../../backend/utils/filesystem.h"
 
@@ -15,7 +15,7 @@ namespace koji::backend::library
 
 struct TrackEntry
 {
-    int track_number;
+    int       track_number;
     SongEntry song;
 };
 
@@ -35,12 +35,12 @@ vector<AlbumEntry> getAlbums()
     {
         if (!filesystem::is_directory(artist))
             continue;
-        
+
         for (const filesystem::directory_entry &album : filesystem::directory_iterator(artist))
         {
             if (!filesystem::is_directory(album))
                 continue;
-            
+
             const AlbumEntry entry = {album.path(), album.path().filename().string(), artist.path().filename().string()};
             albums.push_back(entry);
         }
@@ -62,7 +62,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
         string title;
         string artist;
         int    track_index;
-    
+
         if (!song_file.isNull() && song_file.tag())
         {
             track_index = song_file.tag()->track();
@@ -73,7 +73,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
             continue;
 
         if (title.empty())
-            title              = song.path().stem().string();
+            title = song.path().stem().string();
 
         float duration;
         if (!song_file.isNull() && song_file.audioProperties() != nullptr)
@@ -90,8 +90,8 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
         SongEntry entry = {song.path(), artist, album.title, title, duration};
         tracks.push_back({track_index, entry});
     }
-    
-    std::sort(tracks.begin(), tracks.end(), [](const TrackEntry& a, const TrackEntry& b){ return a.track_number < b.track_number; });
+
+    std::sort(tracks.begin(), tracks.end(), [](const TrackEntry &a, const TrackEntry &b) { return a.track_number < b.track_number; });
 
     vector<SongEntry> songs;
     songs.reserve(tracks.size());

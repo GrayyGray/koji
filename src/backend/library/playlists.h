@@ -9,5 +9,6 @@ namespace koji::backend::library
 {
 std::vector<PlaylistEntry> getPlaylists();
 std::vector<SongEntry>     getPlaylistSongs(const PlaylistEntry &playlist);
-void savePlaylist(const PlaylistEntry &entry, const std::vector<SongEntry> &playlist) ;
+void                       duplicatePlaylist(const PlaylistEntry &entry);
+void                       savePlaylist(const PlaylistEntry &entry, const std::vector<SongEntry> &playlist);
 } // namespace koji::backend::library
