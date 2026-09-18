@@ -7,11 +7,11 @@
 #include "../../../backend/library/playlists.h"
 #include "../../../backend/utils/color.h"
 #include "../../../frontend/compontents/notification.h"
-#include "misc/cpp/imgui_stdlib.h"
 #include "buttons.h"
 #include "editor.h"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 using namespace std;
 using namespace koji::backend::app;
@@ -136,7 +136,7 @@ void renamePlaylistMenu(AppState &state)
     ImGui::Text("Renamed Playlist Name: ");
     ImGui::SameLine();
     ImGui::InputText("##rename", &state.editor_context.rename);
-    if (ImGui::Button("Submit")) 
+    if (ImGui::Button("Submit"))
     {
         if (!renamePlaylist(state.editor_context.playlist, state.editor_context.rename))
             setNotification(state, "Error Rename Playlist Already Exists");

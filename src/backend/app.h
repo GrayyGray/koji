@@ -29,8 +29,8 @@ enum class EditorMode
 
 struct EditorContext
 {
-    EditorMode mode;
-    std::string rename;
+    EditorMode                                     mode;
+    std::string                                    rename;
     koji::backend::library::PlaylistEntry          playlist;
     bool                                           edit_window = false;
     std::vector<koji::backend::library::SongEntry> basket_container;
@@ -60,19 +60,19 @@ struct PlayerContext
 struct NotificationState
 {
     std::string message;
-    float time_left = 0.0f;
+    float       time_left = 0.0f;
 };
 
 struct AppState
 {
-    ImGuiIO      *io;
-    const char   *title;
-    SDL_Window   *window;
-    SDL_Renderer *renderer;
-    int           width, height;
-    float         display_content_scale;
-    EditorContext editor_context;
-    PlayerContext player_context;
+    ImGuiIO          *io;
+    const char       *title;
+    SDL_Window       *window;
+    SDL_Renderer     *renderer;
+    int               width, height;
+    float             display_content_scale;
+    EditorContext     editor_context;
+    PlayerContext     player_context;
     NotificationState notification_state;
 };
 

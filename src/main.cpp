@@ -2,10 +2,10 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "frontend/windows/main/main.h"
 #include "backend/app.h"
+#include "frontend/compontents/notification.h"
 #include "frontend/compontents/player.h"
 #include "frontend/tabs/tabs.h"
 #include "frontend/windows/editor/editor.h"
-#include "frontend/compontents/notification.h"
 #include "imgui.h"
 
 using namespace koji;

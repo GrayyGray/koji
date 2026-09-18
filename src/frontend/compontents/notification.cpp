@@ -6,10 +6,7 @@
 namespace koji::frontend::components::notification
 {
 
-void setNotification(koji::backend::app::AppState &state, const std::string& message)
-{
-    state.notification_state = {message, 3.0f};
-}
+void setNotification(koji::backend::app::AppState &state, const std::string &message) { state.notification_state = {message, 3.0f}; }
 
 void drawNotification(koji::backend::app::AppState &state)
 {
@@ -19,11 +16,10 @@ void drawNotification(koji::backend::app::AppState &state)
     state.notification_state.time_left -= ImGui::GetIO().DeltaTime;
 
     const float padding = 20.0f;
-    const float width = ImGui::CalcTextSize(state.notification_state.message.c_str()).x + padding;
-    const float height = 60.0f;
+    const float width   = ImGui::CalcTextSize(state.notification_state.message.c_str()).x + padding;
+    const float height  = 60.0f;
 
-    const ImVec2 window_size = ImGui::GetWindowSize(); 
-
+    const ImVec2 window_size = ImGui::GetWindowSize();
 
     ImGui::SetNextWindowSize(ImVec2(width, height));
     ImGui::SetNextWindowPos(ImVec2(window_size.x - width - padding, window_size.y - height - padding - 100));
@@ -32,4 +28,3 @@ void drawNotification(koji::backend::app::AppState &state)
     ImGui::End();
 }
 } // namespace koji::frontend::components::notification
-

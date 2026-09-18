@@ -19,7 +19,7 @@ namespace koji::frontend::windows::editor
 {
 void editorWindow(AppState &state)
 {
-    const ImVec2 window_size = ImGui::GetWindowSize(); 
+    const ImVec2 window_size = ImGui::GetWindowSize();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(window_size.x, window_size.y));
     ImGui::Begin("Playlist Editor", &state.editor_context.edit_window, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove); // ImGuiChildFlags_NavFlattened,
@@ -37,7 +37,7 @@ void editorWindow(AppState &state)
     ImGui::PopItemFlag();
     ImGui::End();
 
-    if (!state.editor_context.edit_window)         
+    if (!state.editor_context.edit_window)
         state.editor_context = EditorContext{};
 }
 } // namespace koji::frontend::windows::editor
