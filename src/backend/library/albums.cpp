@@ -2,10 +2,8 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "albums.h"
-#include <fstream>
 #include <iostream>
-#include <optional>
-#include <tuple>
+#include <algorithm>
 #include <taglib/fileref.h>
 #include "../../backend/utils/filesystem.h"
 
@@ -14,6 +12,13 @@ using namespace koji::backend::utils;
 
 namespace koji::backend::library
 {
+
+struct TrackEntry
+{
+    int track_number;
+    SongEntry song;
+};
+
 vector<AlbumEntry> getAlbums()
 {
     vector<AlbumEntry> albums;
@@ -24,25 +29,21 @@ vector<AlbumEntry> getAlbums()
         cout << "xdg config directory locate failed" << endl;
         return albums;
     }
-
     filesystem::path album_directory = xdg_config_directory / "koji" / "albums";
-    for (const auto &album : filesystem::recursive_directory_iterator(album_directory))
+
+    for (const filesystem::directory_entry &artist : filesystem::directory_iterator(album_directory))
     {
-        if (!filesystem::is_directory(album))
+        if (!filesystem::is_directory(artist))
             continue;
-
-        string            relative_album_path_string = filesystem::relative(album.path(), album_directory).string();
-        string::size_type slash_positon              = relative_album_path_string.find('/');
-
-        if (slash_positon == string::npos)
-            continue;
-
-        string artist      = relative_album_path_string.substr(0, slash_positon);
-        string album_title = relative_album_path_string.substr(slash_positon + 1);
-
-        AlbumEntry entry = {album.path(), album_title, artist};
-        if (find(albums.begin(), albums.end(), entry) == albums.end())
+        
+        for (const filesystem::directory_entry &album : filesystem::directory_iterator(artist))
+        {
+            if (!filesystem::is_directory(album))
+                continue;
+            
+            const AlbumEntry entry = {album.path(), album.path().filename().string(), artist.path().filename().string()};
             albums.push_back(entry);
+        }
     }
 
     return albums;
@@ -50,19 +51,18 @@ vector<AlbumEntry> getAlbums()
 
 vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 {
-    vector<tuple<int, SongEntry>> tracks;
-    for (const auto &song : filesystem::recursive_directory_iterator(album.path.c_str()))
+    vector<TrackEntry> tracks;
+    for (const filesystem::directory_entry &song : filesystem::directory_iterator(album.path))
     {
-        if (filesystem::is_directory(song))
+        if (!filesystem::is_regular_file(song))
             continue;
 
-        string song_path = song.path().c_str();
+        TagLib::FileRef song_file(song.path().string().c_str());
 
-        TagLib::FileRef song_file(song_path.c_str());
-
-        int    track_index;
-        string artist;
         string title;
+        string artist;
+        int    track_index;
+    
         if (!song_file.isNull() && song_file.tag())
         {
             track_index = song_file.tag()->track();
@@ -73,11 +73,7 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
             continue;
 
         if (title.empty())
-        {
-            size_t last_period = song_path.rfind('.');
-            size_t last_slash  = song_path.rfind('/');
-            title              = song_path.substr(last_slash + 1, last_period - last_slash - 1);
-        }
+            title              = song.path().stem().string();
 
         float duration;
         if (!song_file.isNull() && song_file.audioProperties() != nullptr)
@@ -94,14 +90,14 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
         SongEntry entry = {song.path(), artist, album.title, title, duration};
         tracks.push_back({track_index, entry});
     }
-
-    std::sort(tracks.begin(), tracks.end(), [](const tuple<int, SongEntry> &entry_a, const tuple<int, SongEntry> &entry_b) { return get<0>(entry_a) < get<0>(entry_b); });
+    
+    std::sort(tracks.begin(), tracks.end(), [](const TrackEntry& a, const TrackEntry& b){ return a.track_number < b.track_number; });
 
     vector<SongEntry> songs;
     songs.reserve(tracks.size());
 
-    for (const tuple<int, SongEntry> &track : tracks)
-        songs.push_back(get<1>(track));
+    for (const TrackEntry &track : tracks)
+        songs.push_back(track.song);
 
     return songs;
 }

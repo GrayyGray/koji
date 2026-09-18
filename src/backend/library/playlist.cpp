@@ -3,8 +3,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <optional>
-#include <tuple>
 #include <taglib/fileref.h>
 #include "../../backend/utils/filesystem.h"
 #include "playlists.h"
@@ -26,19 +24,14 @@ vector<PlaylistEntry> getPlaylists()
     }
     filesystem::path playlists_directory = xdg_config_directory / "koji" / "playlists";
 
-    PlaylistEntry entry;
-    string relative_path;
-    string playlist_title;
-    filesystem::path playlist_m3u;
-    for (const auto &folder : filesystem::directory_iterator(playlists_directory))
+    for (const filesystem::directory_entry &folder : filesystem::directory_iterator(playlists_directory))
     {
         if (!filesystem::is_directory(folder))
             continue;
 
-        playlist_m3u = folder.path() / (folder.path().filename().string() + ".m3u");
-        playlist_title = playlist_m3u.stem().string();
-
-        entry = {playlist_m3u, playlist_title};
+        const filesystem::path m3u = folder.path() / (folder.path().filename().string() + ".m3u");
+        const string title = m3u.stem().string();
+        const PlaylistEntry entry = {m3u, title};
         
         playlists.push_back(entry);
     }
@@ -58,12 +51,12 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
     filesystem::path songs_directory = playlist.path.parent_path();
 
     string song;
-    string title;
-    string album;
-    string artist;
-    filesystem::path song_path;
     while (getline(playlist_file, song))
     {
+        string title;
+        string album;
+        string artist;
+        filesystem::path song_path;
         if (filesystem::exists(songs_directory / song))
             song_path = songs_directory / song;
         else
@@ -119,13 +112,12 @@ void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist)
 
     if (!playlist_file.is_open())
         return;
-    
-    string song_filename;
+
     filesystem::path songs_directory = entry.path.parent_path();
 
     for (const auto &song : playlist) 
     {
-        song_filename = song.path.filename().string();
+        const string song_filename = song.path.filename().string();
         if (filesystem::exists(songs_directory / song_filename))
             playlist_file << song_filename << endl;
         else
