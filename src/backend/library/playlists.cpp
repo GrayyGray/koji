@@ -102,7 +102,7 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 bool renamePlaylist(const PlaylistEntry &entry, const std::string &name)
 {
     const filesystem::path m3u     = entry.path;
-    const filesystem::path new_m3u = m3u.parent_path() / name;
+    const filesystem::path new_m3u = m3u.parent_path() / (name + m3u.extension().string());
 
     const filesystem::path directory     = m3u.parent_path();
     const filesystem::path new_directory = directory.parent_path() / name;
