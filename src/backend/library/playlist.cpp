@@ -18,13 +18,13 @@ vector<PlaylistEntry> getPlaylists()
 {
     vector<PlaylistEntry> playlists;
 
-    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
-    if (!xdg_config_directory)
+    filesystem::path xdg_config_directory = xdgConfigDir();
+    if (xdg_config_directory.empty())
     {
         cout << "xdg config directory locate failed" << endl;
         return playlists;
     }
-    filesystem::path playlists_directory = *xdg_config_directory / "koji" / "playlists";
+    filesystem::path playlists_directory = xdg_config_directory / "koji" / "playlists";
 
     for (const auto &playlist : filesystem::directory_iterator(playlists_directory))
     {
@@ -36,8 +36,7 @@ vector<PlaylistEntry> getPlaylists()
         string            playlist_title             = relative_album_path_string.substr(0, dot_positon);
 
         PlaylistEntry entry = {playlist.path(), playlist_title};
-        if (find(playlists.begin(), playlists.end(), entry) == playlists.end())
-            playlists.push_back(entry);
+        playlists.push_back(entry);
     }
 
     return playlists;
@@ -52,14 +51,14 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
     if (!playlist_file)
         return songs;
 
-    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
-    if (!xdg_config_directory)
+    filesystem::path xdg_config_directory = xdgConfigDir();
+    if (xdg_config_directory.empty())
     {
         cout << "xdg config directory locate failed" << endl;
         return songs;
     }
 
-    filesystem::path songs_directory = *xdg_config_directory / "koji" / "playlists" / "songs";
+    filesystem::path songs_directory = xdg_config_directory / "koji" / "playlists" / "songs";
 
     string playlist_song;
 
@@ -111,7 +110,19 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 
 void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> playlist) 
 {
+    cout << entry.path.string() << endl;
+
+    ofstream playlist_file(entry.path, ios::trunc);
     
+    printf("%d\n", playlist_file.is_open());
+
+    if (!playlist_file.is_open())
+        return;
+    
+    for (const auto &song : playlist) 
+        playlist_file << song.path.filename().string() << endl;
+
+    playlist_file.close();
 }
 
 } // namespace koji::backend::library

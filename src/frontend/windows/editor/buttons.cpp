@@ -119,6 +119,7 @@ void buttonSave(AppState &state, float button_size)
         return;
 
     savePlaylist(state.editor_context.playlist, state.editor_context.playlist_container);
+    state.editor_context.edit_window = false;
 }
 
 void buttonCancel(AppState &state, float button_size)

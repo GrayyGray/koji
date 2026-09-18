@@ -24,7 +24,7 @@ void editorWindow(AppState &state)
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     ImGui::PushItemFlag(ImGuiItemFlags_NoArrowNav, true);
 
-    if (state.editor_context.playlist_container == vector<SongEntry>{})
+    if (state.editor_context.playlist == PlaylistEntry{} || state.editor_context.playlist_container == vector<SongEntry>{})
         selectPlaylistMenu(state);
     else
         playlistEditorMenu(state);

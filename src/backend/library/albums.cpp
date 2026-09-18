@@ -18,14 +18,14 @@ vector<AlbumEntry> getAlbums()
 {
     vector<AlbumEntry> albums;
 
-    optional<filesystem::path> xdg_config_directory = xdgConfigDir();
-    if (!xdg_config_directory)
+    filesystem::path xdg_config_directory = xdgConfigDir();
+    if (xdg_config_directory.empty())
     {
         cout << "xdg config directory locate failed" << endl;
         return albums;
     }
 
-    filesystem::path album_directory = *xdg_config_directory / "koji" / "albums";
+    filesystem::path album_directory = xdg_config_directory / "koji" / "albums";
     for (const auto &album : filesystem::recursive_directory_iterator(album_directory))
     {
         if (!filesystem::is_directory(album))
