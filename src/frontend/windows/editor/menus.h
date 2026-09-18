@@ -6,7 +6,6 @@
 namespace koji::frontend::windows::editor
 {
 void selectPlaylistMenu(koji::backend::app::AppState &state);
-void contextMenu(koji::backend::app::AppState &state);
 void editPlaylistMenu(koji::backend::app::AppState &state);
 void renamePlaylistMenu(koji::backend::app::AppState &state);
 } // namespace koji::frontend::windows::editor

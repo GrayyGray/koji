@@ -42,28 +42,6 @@ void selectPlaylistMenu(AppState &state)
     ImGui::EndTable();
 }
 
-void contextMenu(AppState &state)
-{
-    const ImVec2 window_size = ImGui::GetWindowSize(); 
-    if (ImGui::Button("Rename Playlist", ImVec2(window_size.x, 0)))
-    {
-        state.editor_context.mode = EditorMode::Rename;
-        state.editor_context.rename = state.editor_context.playlist.title;
-    }
-
-    if (ImGui::Button("Edit Playlist Order", ImVec2(window_size.x, 0)))
-        state.editor_context.mode = EditorMode::Edit;
-
-    if (ImGui::Button("Copy Playlist", ImVec2(window_size.x, 0)))
-    {
-        if (!duplicatePlaylist(state.editor_context.playlist))
-            setNotification(state, "Error Copied Playlist Already Exists");
-        
-        state.player_context.playlists = getPlaylists();
-        state.editor_context.edit_window = false;
-    }
-}
-
 void editPlaylistMenu(AppState &state)
 {
     const float  margin                    = 4.0f;

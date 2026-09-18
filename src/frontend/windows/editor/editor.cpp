@@ -28,8 +28,6 @@ void editorWindow(AppState &state)
 
     if (state.editor_context.playlist == PlaylistEntry{} || state.editor_context.playlist_container == vector<SongEntry>{})
         selectPlaylistMenu(state);
-    else if (state.editor_context.mode == EditorMode::None)
-        contextMenu(state);
     else if (state.editor_context.mode == EditorMode::Edit)
         editPlaylistMenu(state);
     else if (state.editor_context.mode == EditorMode::Rename)

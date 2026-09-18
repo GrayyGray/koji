@@ -23,14 +23,13 @@ enum class RepeatMode
 
 enum class EditorMode
 {
-    None,
     Edit,
     Rename
 };
 
 struct EditorContext
 {
-    EditorMode mode = EditorMode::None;
+    EditorMode mode;
     std::string rename;
     koji::backend::library::PlaylistEntry          playlist;
     bool                                           edit_window = false;
