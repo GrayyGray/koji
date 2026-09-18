@@ -5,7 +5,9 @@
 #include "frontend/compontents/player.h"
 #include "frontend/tabs/tabs.h"
 #include "frontend/windows/editor/editor.h"
+#include "frontend/compontents/notification.h"
 #include "imgui.h"
+
 using namespace koji;
 using namespace backend;
 using namespace frontend;
@@ -41,9 +43,9 @@ int main(int, char **)
         components::player::renderPlayer(state.player_context);
 
         if (state.editor_context.edit_window)
-        {
             windows::editor::editorWindow(state);
-        }
+
+        components::notification::drawNotification(state);
 
         windows::main::endMainWindow(state);
     }

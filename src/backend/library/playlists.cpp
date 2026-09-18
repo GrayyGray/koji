@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "playlists.h"
 #include <fstream>
 #include <iostream>
 #include <taglib/fileref.h>
 #include "../../backend/utils/filesystem.h"
-#include "playlists.h"
 
 using namespace std;
 using namespace koji::backend::utils;
@@ -101,12 +101,12 @@ vector<SongEntry> getPlaylistSongs(const PlaylistEntry &playlist)
 
 bool renamePlaylist(const PlaylistEntry &entry, const std::string &name)
 {
-    const filesystem::path m3u = entry.path;
+    const filesystem::path m3u     = entry.path;
     const filesystem::path new_m3u = m3u.parent_path() / name;
-    
-    const filesystem::path directory = m3u.parent_path();
+
+    const filesystem::path directory     = m3u.parent_path();
     const filesystem::path new_directory = directory.parent_path() / name;
-    
+
     if (filesystem::exists(new_m3u))
         return false;
 
@@ -147,17 +147,17 @@ void savePlaylist(const PlaylistEntry &entry, const vector<SongEntry> &playlist)
     playlist_file.close();
 }
 
-bool duplicatePlaylist(const PlaylistEntry &entry) 
+bool duplicatePlaylist(const PlaylistEntry &entry)
 {
-    const filesystem::path directory = entry.path.parent_path();
-    const filesystem::path directory_copy = directory.parent_path() / (entry.title + "copy");
-    
-    const filesystem::path m3u = directory_copy / entry.title;
-    const filesystem::path m3u_copy = m3u.string() + " copy";
+    const filesystem::path directory      = entry.path.parent_path();
+    const filesystem::path directory_copy = directory.parent_path() / (entry.title + " copy");
+
+    const filesystem::path m3u      = directory_copy / entry.path.filename();
+    const filesystem::path m3u_copy = m3u.parent_path() / (m3u.stem().string() + " copy" + m3u.extension().string());
 
     if (filesystem::exists(directory_copy))
         return false;
-    
+
     if (filesystem::exists(m3u_copy))
         return false;
 

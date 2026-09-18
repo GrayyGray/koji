@@ -13,6 +13,7 @@
 
 namespace koji::backend::app
 {
+
 enum class RepeatMode
 {
     Off,
@@ -20,8 +21,17 @@ enum class RepeatMode
     Track
 };
 
+enum class EditorMode
+{
+    None,
+    Edit,
+    Rename
+};
+
 struct EditorContext
 {
+    EditorMode mode = EditorMode::None;
+    std::string rename;
     koji::backend::library::PlaylistEntry          playlist;
     bool                                           edit_window = false;
     std::vector<koji::backend::library::SongEntry> basket_container;
@@ -48,6 +58,12 @@ struct PlayerContext
     mpv_handle  *mpv_context = nullptr;
 };
 
+struct NotificationState
+{
+    std::string message;
+    float time_left = 0.0f;
+};
+
 struct AppState
 {
     ImGuiIO      *io;
@@ -58,6 +74,7 @@ struct AppState
     float         display_content_scale;
     EditorContext editor_context;
     PlayerContext player_context;
+    NotificationState notification_state;
 };
 
 bool initialize(AppState &state);

@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 #include "entries.h"
 
 namespace koji::backend::library
