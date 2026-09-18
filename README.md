@@ -3,19 +3,24 @@
 Koji is a music player built with C++ and the ImGui library. 
 It uses mpv for audio playback and SDL3 for window management. 
 
-## Quick Start
-
-- **Dependencies:** [SDL3](https://github.com/libsdl-org/SDL), [mpv](https://mpv.io/), [TagLib](https://taglib.org/)
-    - Install these dependencies using your system's package manager before building.
-- **Installation:** ```git clone https://github.com/GrayyGray/koji.git && make all```
-- **Importing Files:** Follow the formatting in [File Formatting](#file-formatting)
-- **Running:** ```./koji```
-
 ## Overview
 
 - **Song Queue Tab**: Displays the current song queue and allows users to select songs to play.
 - **Album Selection Tab**: Lists available albums and allows users to add all songs from an album to the queue.
 - **Playlist Selection Tab**: Lists available playlists and allows users to add all songs from a playlist to the queue.
+
+## Quick Start
+
+### For Linux
+
+- **Dependencies:** [SDL3](https://github.com/libsdl-org/SDL), [mpv](https://mpv.io/), [taglib](https://taglib.org/) (Install these dependencies using your system's package manager before building)
+- **Installation:** ```git clone https://github.com/GrayyGray/koji.git && make all```
+- **Importing Files:** Follow the formatting in [File Formatting](#file-formatting)
+- **Running:** ```./koji```
+
+### For Others
+
+-  Create a feature request sorry but i ain't freely supporting other systems than linux unless people want it.
 
 ## Keybinding
 - `S`: Toggle shuffle
